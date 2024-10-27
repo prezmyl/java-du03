@@ -38,4 +38,28 @@ public class Player extends GameObject implements DrawableSimulable {
     public double getHeight() {
         return HEIGHT;
     }
+
+    //Vnorena trida (zavislost Health na vnejsi tride Player)
+    public class Health{
+        private int lives;
+
+        public Health(int lives){
+            this.lives = lives;
+        }
+
+        public int getLives(){
+            return lives;
+        }
+
+        public void decreaseLives() {
+            if (lives > 0){
+                lives--;
+            }
+        }
+
+        public void increaseLives() {
+            lives++;
+        }
+    }
+
 }

@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Barricade extends StaticObject implements DrawAble{
+public class Barricade extends GameObject implements DrawAble{
 
     private static final double WIDTH = 50;
     private static final double HEIGHT = 15;

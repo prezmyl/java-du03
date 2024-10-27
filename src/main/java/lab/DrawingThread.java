@@ -27,7 +27,7 @@ public class DrawingThread extends AnimationTimer {
 
 		// Přidání barikád
 		for (int i = 0; i < 5; i++) {
-			drawAble.add(new Barricade(200 + i * 100, 300));
+			gameObject.add(new Barricade(200 + i * 100, 300));
 		}
 
 	}
