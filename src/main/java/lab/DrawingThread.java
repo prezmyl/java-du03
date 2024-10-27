@@ -36,23 +36,25 @@ public class DrawingThread extends AnimationTimer {
 	public void handle(long now) {
 		gc.clearRect(0, 0, 800, 400);
 
-		// pridani strely kazdou s
+		// pridani strely
 		if (now - lastBulletTime > BULLET_INTERVAL) {
 				addBullet(player.getPosition().getX() + player.getWidth() / 2 - Bullet.WIDTH / 2, player.getPosition().getY() - Bullet.HEIGHT);
 			lastBulletTime = now;
 		}
 
 		// aktualiza a vykresleni hernich obj.
-		Iterator<GameObject> iterator = gameObject.iterator();
-		while (iterator.hasNext()) {
-			GameObject obj = iterator.next();
-			obj.simulate(); // Pohyb objektu
-			obj.draw(gc); // Vykreslení objektu
+		for (GameObject obj : gameObject) {
+			if (obj instanceof DrawAble) {
+				DrawableSimulable simulable = (DrawableSimulable) obj;
+				simulable.draw(gc);
+				simulable.simulate();
+			}
+			else if (obj instanceof DrawAble){
+				((DrawAble) obj).draw(gc);
+			}
 
 		}
-		for (StaticObject staticObject : drawAble) {
-			staticObject.draw(gc);
-		}
+
 	}
 
 	// Pridani nove strely
