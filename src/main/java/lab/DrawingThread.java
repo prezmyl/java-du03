@@ -44,13 +44,12 @@ public class DrawingThread extends AnimationTimer {
 
 		// aktualiza a vykresleni hernich obj.
 		for (GameObject obj : gameObject) {
-			if (obj instanceof DrawableSimulable) {
-				DrawableSimulable simulable = (DrawableSimulable) obj;
-				simulable.draw(gc);
+			if (obj instanceof DrawableSimulable simulable) {
+                simulable.draw(gc);
 				simulable.simulate();
 			}
-			else if (obj instanceof DrawAble){
-				((DrawAble) obj).draw(gc);
+			else if (obj instanceof DrawAble drawable) {
+				drawable.draw(gc);
 			}
 
 		}
