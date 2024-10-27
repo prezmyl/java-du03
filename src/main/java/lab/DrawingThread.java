@@ -4,16 +4,15 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class DrawingThread extends AnimationTimer {
 	private final GraphicsContext gc;
 	private final ArrayList<GameObject> gameObject = new ArrayList<>();
-	private final ArrayList<DrawAble> drawAble = new ArrayList<>();
 	private final Player player;
 	private long lastBulletTime = 0;
 	private static final long BULLET_INTERVAL = 1000000000;
-	private final double bulletWIDTH = 5;
+
 
 	public DrawingThread(Canvas canvas) {
 		this.gc = canvas.getGraphicsContext2D();
@@ -42,17 +41,16 @@ public class DrawingThread extends AnimationTimer {
 			lastBulletTime = now;
 		}
 
+		//Pouziti Lambda vyrazu
 		// aktualiza a vykresleni hernich obj.
-		for (GameObject obj : gameObject) {
+		gameObject.forEach(obj -> {
 			if (obj instanceof DrawableSimulable simulable) {
-                simulable.draw(gc);
+				simulable.draw(gc);
 				simulable.simulate();
-			}
-			else if (obj instanceof DrawAble drawable) {
+			} else if (obj instanceof DrawAble drawable) {
 				drawable.draw(gc);
 			}
-
-		}
+		});
 
 	}
 
