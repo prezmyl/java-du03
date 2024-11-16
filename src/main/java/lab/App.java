@@ -23,26 +23,29 @@ public class App extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/lab/gameWindow.fxml"));
 			Pane root = loader.load();
 
-			GameSession gameSession = new GameSession(loader.getController());
+			GameSession gameSession = new GameSession();
 			//Player player = new Player(Constant.PLAYER_START.getX(), Constant.PLAYER_START.getY());
 
 			GameController gameController = loader.getController();
-			gameController.setGameSession(gameSession);
+
 
 
 			//Group root = new Group();
 			Canvas canvas = new Canvas(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			root.getChildren().add(canvas);
-
+			drawingThread = new DrawingThread(canvas, gameSession);
+			gameController.setGameSession(gameSession, drawingThread);
 			Scene scene = new Scene(root, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Space Invaders");
 			primaryStage.show();
 
 			scene.setOnKeyPressed(gameController::handleKeyPress);
+			canvas.requestFocus();
+
 
 			// Spusteni herni smycky
-			drawingThread = new DrawingThread(canvas, gameSession);
+
 			drawingThread.start();
 
 		} catch (Exception e) {

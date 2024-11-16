@@ -10,7 +10,7 @@ public class DrawingThread extends AnimationTimer {
 	private final GraphicsContext gc;
 	private final ArrayList<GameObject> gameObject = new ArrayList<>();
 	private final Player player;
-	private final GameStateObserver gameStateObserver;
+	//private final GameStateObserver gameStateObserver;
 	private final ScoreManager scoreManager;
 	private final HealthDisplay healthDisplay;
 	private long lastBulletTime = 0;
@@ -21,7 +21,8 @@ public class DrawingThread extends AnimationTimer {
 		this.gc = canvas.getGraphicsContext2D();
 		this.player = gameSession.getPlayer();
 		this.scoreManager = gameSession.getScoreManager();
-		this.gameStateObserver = gameSession.getGameStateObserver();
+		//this.gameStateObserver = gameSession.getGameStateObserver();
+		this.healthDisplay = new HealthDisplay(player.new Health(3));
 
 
 		gameObject.add(player);
@@ -34,7 +35,7 @@ public class DrawingThread extends AnimationTimer {
 			gameObject.add(new Barricade(200 + i * 100, 300));
 		}
 
-		this.healthDisplay = new HealthDisplay(player.new Health(3));
+
 
 	}
 
@@ -43,10 +44,10 @@ public class DrawingThread extends AnimationTimer {
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
 		// pridani strely
-		if (now - lastBulletTime > BULLET_INTERVAL) {
+	/*	if (now - lastBulletTime > BULLET_INTERVAL) {
 				addBullet(player.getPosition().getX() + player.getWidth() / 2 - Bullet.BULLET_WIDTH / 2, player.getPosition().getY() - Bullet.BULLET_HEIGHT);
 			lastBulletTime = now;
-		}
+		}*/
 
 
 		// aktualiza a vykresleni hernich obj.
@@ -59,19 +60,20 @@ public class DrawingThread extends AnimationTimer {
 			}
 		}
 
-		gameStateObserver.onScoreUpdate(scoreManager.getScore());
-		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
-		if (player.getHealth().getLives() <= 0) {
+		//gameStateObserver.onScoreUpdate(scoreManager.getScore());
+		//gameStateObserver.onLivesUpdate(player.getHealth().getLives());
+		healthDisplay.update(); // Aktualizuje zobrazení životů
+		scoreManager.update(); // Aktualizuje zobrazení skóre
+
+	/*	if (player.getHealth().getLives() <= 0) {
 			gameStateObserver.onGameOver();
-		}
-
-
+		}*/
 
 
 	}
 
 	// Pridani nove strely
-		public void addBullet(double x, double y) {
-		gameObject.add(new Bullet(x, y));
+		public void addBullet(Bullet bullet) {
+			gameObject.add(bullet);
 		}
 }

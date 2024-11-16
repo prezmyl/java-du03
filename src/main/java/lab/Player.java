@@ -12,18 +12,18 @@ public class Player extends GameObject implements DrawableSimulable {
 
     public Player(double x, double y) {
         super(x, y);
-        this.speedX = 0.5;
+        this.speedX = 5;
         this.health = new Health(Constant.MAX_HEALTH);
     }
 
     @Override
     public void simulate(){
-        if (position.getX() + speedX < Constant.GAME_WIDTH - PLAYER_WIDTH && position.getX() + speedX > 0) {
+       /* if (position.getX() + speedX < Constant.GAME_WIDTH - PLAYER_WIDTH && position.getX() + speedX > 0) {
             position = new Point2D(position.getX() + speedX, position.getY());
         }
         else{
             this.speedX = -1 * speedX;
-        }
+        }*/
 
     }
 
@@ -43,10 +43,16 @@ public class Player extends GameObject implements DrawableSimulable {
         position = new Point2D(position.getX() + speedX, position.getY());
     }
 
-    public void shoot(){
+    /*public void shoot(){
         Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() - Bullet.BULLET_HEIGHT);
+    }*/
+    public void shoot(DrawingThread drawingThread) {
+        Bullet bullet = new Bullet(
+                position.getX() + getWidth() / 2 - Bullet.BULLET_WIDTH / 2,
+                position.getY() - Bullet.BULLET_HEIGHT
+        );
+        drawingThread.addBullet(bullet); // Předání střely do DrawingThread
     }
-
     public Health getHealth(){
         return health;
     }

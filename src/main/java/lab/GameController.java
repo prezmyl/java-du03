@@ -21,28 +21,35 @@ public class GameController implements GameStateObserver {
     private final Map<KeyCode, Runnable> keyAction = new HashMap<>();
 
     public GameController(){
+        // Bezparametrický konstruktor pro FXML
     }
 
-    public void setGameSession(GameSession gameSession) {
+    public void setGameSession(GameSession gameSession, DrawingThread drawingThread) {
         this.gameSession = gameSession;
 
         //init valid input mapping using lambda
         Player player = gameSession.getPlayer();
         keyAction.put(KeyCode.LEFT, () -> player.moveLeft());
         keyAction.put(KeyCode.RIGHT, () -> player.moveRight());
-        keyAction.put(KeyCode.SPACE, () -> player.shoot());
+        keyAction.put(KeyCode.SPACE, () -> player.shoot(drawingThread));
     }
+
+
 
     //Lambda
     public void initialize(){
+        System.out.println("GameController initialized.");
     }
 
     @FXML
     protected void handleKeyPress(KeyEvent keyEvent) {
+        System.out.println("Key pressed: " + keyEvent.getCode()); // Výpis klávesy
         Runnable action = keyAction.get(keyEvent.getCode());
         if(action != null){
+            System.out.println("Action triggered for: " + keyEvent.getCode());
             action.run();
         }
+        else  System.out.println("No action mapped for: " + keyEvent.getCode());
 
     }
 

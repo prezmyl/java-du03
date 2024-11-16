@@ -3,12 +3,12 @@ package lab;
 public class GameSession {
     private final Player player;
     private final ScoreManager scoreManager;
-    private final GameStateObserver gameStateObserver;
+   // private final GameStateObserver gameStateObserver;
 
-    public GameSession(GameStateObserver gameStateObserver) {
+    public GameSession() {
         this.player = new Player(Constant.PLAYER_START.getX(), Constant.PLAYER_START.getY());
         this.scoreManager = new ScoreManager();
-        this.gameStateObserver = gameStateObserver;
+       // this.gameStateObserver = gameStateObserver;
     }
 
     public Player getPlayer() {
@@ -19,7 +19,7 @@ public class GameSession {
         return scoreManager;
     }
 
-    public GameStateObserver getGameStateObserver() {
+ /*   public GameStateObserver getGameStateObserver() {
         return gameStateObserver;
-    }
+    }*/
 }
