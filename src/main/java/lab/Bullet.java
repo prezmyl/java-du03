@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Bullet extends GameObject implements DrawableSimulable {
-    protected static final double WIDTH = 5;
-    protected static final double HEIGHT = 10;
+    protected static final double BULLET_WIDTH = 5;
+    protected static final double BULLET_HEIGHT = 10;
 
     public Bullet(double x, double y) {
         super(x, y);
@@ -21,14 +21,14 @@ public class Bullet extends GameObject implements DrawableSimulable {
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLACK);
-        gc.fillRect(position.getX(), position.getY(), WIDTH, HEIGHT);
+        gc.fillRect(position.getX(), position.getY(), BULLET_WIDTH, BULLET_HEIGHT);
     }
 
     public double getWidth() {
-        return WIDTH;
+        return BULLET_WIDTH;
     }
 
     public double getHeight() {
-        return HEIGHT;
+        return BULLET_HEIGHT;
     }
 }

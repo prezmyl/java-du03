@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 
 public class Player extends GameObject implements DrawableSimulable {
 
-    private static final double WIDTH = 40;
-    private static final double HEIGHT = 20;
+    private static final double PLAYER_WIDTH = 40;
+    private static final double PLAYER_HEIGHT = 20;
 
     public Player(double x, double y) {
         super(x, y);
@@ -16,7 +16,7 @@ public class Player extends GameObject implements DrawableSimulable {
 
     @Override
     public void simulate(){
-        if (position.getX() + speedX < 800 - WIDTH && position.getX() + speedX > 0) {
+        if (position.getX() + speedX < Constant.GAME_WIDTH - PLAYER_WIDTH && position.getX() + speedX > 0) {
             position = new Point2D(position.getX() + speedX, position.getY());
         }
         else{
@@ -28,15 +28,16 @@ public class Player extends GameObject implements DrawableSimulable {
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.GREEN);
-        gc.fillRect(position.getX(), position.getY(), WIDTH, HEIGHT);
+        gc.fillRect(position.getX(), position.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
+
     }
 
     public double getWidth() {
-        return WIDTH;
+        return PLAYER_WIDTH;
     }
 
     public double getHeight() {
-        return HEIGHT;
+        return PLAYER_HEIGHT;
     }
 
     //Vnorena trida (zavislost Health na vnejsi tride Player)

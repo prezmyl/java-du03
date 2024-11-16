@@ -18,9 +18,9 @@ public class App extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Group root = new Group();
-			Canvas canvas = new Canvas(800, 400);
+			Canvas canvas = new Canvas(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			root.getChildren().add(canvas);
-			Scene scene = new Scene(root, 800, 400);
+			Scene scene = new Scene(root, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Space Invaders");

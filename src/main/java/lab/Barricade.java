@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 
 public class Barricade extends GameObject implements DrawAble{
 
-    private static final double WIDTH = 50;
-    private static final double HEIGHT = 15;
+    private static final double BARRICADE_WIDTH = 50;
+    private static final double BARRICADE_HEIGHT = 15;
 
     public Barricade(double x, double y) {
         super(x, y);
@@ -16,14 +16,14 @@ public class Barricade extends GameObject implements DrawAble{
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.GRAY);
-        gc.fillRect(position.getX(), position.getY(), WIDTH, HEIGHT);
+        gc.fillRect(position.getX(), position.getY(), BARRICADE_WIDTH, BARRICADE_HEIGHT);
     }
 
     public double getWidth() {
-        return WIDTH;
+        return BARRICADE_WIDTH;
     }
 
     public double getHeight() {
-        return HEIGHT;
+        return BARRICADE_HEIGHT;
     }
 }
