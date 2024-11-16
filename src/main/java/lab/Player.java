@@ -8,10 +8,12 @@ public class Player extends GameObject implements DrawableSimulable {
 
     private static final double PLAYER_WIDTH = 40;
     private static final double PLAYER_HEIGHT = 20;
+    private Health health;
 
     public Player(double x, double y) {
         super(x, y);
         this.speedX = 0.5;
+        this.health = new Health(Constant.MAX_HEALTH);
     }
 
     @Override
@@ -30,6 +32,23 @@ public class Player extends GameObject implements DrawableSimulable {
         gc.setFill(Color.GREEN);
         gc.fillRect(position.getX(), position.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
 
+    }
+
+    public void moveLeft(){
+        position = new Point2D(position.getX() - speedX, position.getY());
+    }
+
+
+    public void moveRight(){
+        position = new Point2D(position.getX() + speedX, position.getY());
+    }
+
+    public void shoot(){
+        Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() - Bullet.BULLET_HEIGHT);
+    }
+
+    public Health getHealth(){
+        return health;
     }
 
     public double getWidth() {

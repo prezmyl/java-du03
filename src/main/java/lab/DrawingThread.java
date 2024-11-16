@@ -10,19 +10,21 @@ public class DrawingThread extends AnimationTimer {
 	private final GraphicsContext gc;
 	private final ArrayList<GameObject> gameObject = new ArrayList<>();
 	private final Player player;
+	private final GameStateObserver gameStateObserver;
 	private final ScoreManager scoreManager;
 	private final HealthDisplay healthDisplay;
 	private long lastBulletTime = 0;
 	private static final long BULLET_INTERVAL = 1000000000;
 
 
-	public DrawingThread(Canvas canvas) {
+	public DrawingThread(Canvas canvas, GameSession gameSession ) {
 		this.gc = canvas.getGraphicsContext2D();
-		this.player = new Player(100, 350);
-		gameObject.add(player);
+		this.player = gameSession.getPlayer();
+		this.scoreManager = gameSession.getScoreManager();
+		this.gameStateObserver = gameSession.getGameStateObserver();
 
-		this.scoreManager = new ScoreManager();
-		this.healthDisplay = new HealthDisplay(player.new Health(3));
+
+		gameObject.add(player);
 
 		for (int i = 0; i < 11; i++) {
 			gameObject.add(new Enemy(100 + i * 60, 50));
@@ -31,6 +33,8 @@ public class DrawingThread extends AnimationTimer {
 		for (int i = 0; i < 5; i++) {
 			gameObject.add(new Barricade(200 + i * 100, 300));
 		}
+
+		this.healthDisplay = new HealthDisplay(player.new Health(3));
 
 	}
 
@@ -55,22 +59,19 @@ public class DrawingThread extends AnimationTimer {
 			}
 		}
 
-		/*
-		gameObject.forEach(obj -> {
-			if (obj instanceof DrawableSimulable simulable) {
-				simulable.draw(gc);
-				simulable.simulate();
-			} else if (obj instanceof DrawAble drawable) {
-				drawable.draw(gc);
-			}
-		}); */
+		gameStateObserver.onScoreUpdate(scoreManager.getScore());
+		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
+		if (player.getHealth().getLives() <= 0) {
+			gameStateObserver.onGameOver();
+		}
 
-		gc.fillText("Score: " + scoreManager.getScore(), 10, 40);
-		healthDisplay.draw(gc);
+
+
+
 	}
 
 	// Pridani nove strely
-	public void addBullet(double x, double y) {
+		public void addBullet(double x, double y) {
 		gameObject.add(new Bullet(x, y));
-	}
+		}
 }

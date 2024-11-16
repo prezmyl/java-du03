@@ -1,9 +1,12 @@
 package lab;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -17,17 +20,29 @@ public class App extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Group root = new Group();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/lab/gameWindow.fxml"));
+			Pane root = loader.load();
+
+			GameSession gameSession = new GameSession(loader.getController());
+			//Player player = new Player(Constant.PLAYER_START.getX(), Constant.PLAYER_START.getY());
+
+			GameController gameController = loader.getController();
+			gameController.setGameSession(gameSession);
+
+
+			//Group root = new Group();
 			Canvas canvas = new Canvas(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			root.getChildren().add(canvas);
-			Scene scene = new Scene(root, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
+			Scene scene = new Scene(root, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Space Invaders");
 			primaryStage.show();
 
+			scene.setOnKeyPressed(gameController::handleKeyPress);
+
 			// Spusteni herni smycky
-			drawingThread = new DrawingThread(canvas);
+			drawingThread = new DrawingThread(canvas, gameSession);
 			drawingThread.start();
 
 		} catch (Exception e) {
