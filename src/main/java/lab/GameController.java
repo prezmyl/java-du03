@@ -1,13 +1,13 @@
 package lab;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import javafx.fxml.FXML;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameController implements GameStateObserver {
@@ -20,7 +20,7 @@ public class GameController implements GameStateObserver {
     private GameSession gameSession;
     private final Map<KeyCode, Runnable> keyAction = new HashMap<>();
 
-    public GameController(){
+    public GameController() {
         // Bezparametrický konstruktor pro FXML
     }
 
@@ -32,12 +32,11 @@ public class GameController implements GameStateObserver {
         keyAction.put(KeyCode.LEFT, () -> player.moveLeft());
         keyAction.put(KeyCode.RIGHT, () -> player.moveRight());
         keyAction.put(KeyCode.SPACE, () -> player.shoot(drawingThread));
+        keyAction.put(KeyCode.H, this::displayHighScores);
+        keyAction.put(KeyCode.J, this::saveCurrentScore);
     }
 
-
-
-    //Lambda
-    public void initialize(){
+    public void initialize() {
         System.out.println("GameController initialized.");
     }
 
@@ -45,12 +44,12 @@ public class GameController implements GameStateObserver {
     protected void handleKeyPress(KeyEvent keyEvent) {
         System.out.println("Key pressed: " + keyEvent.getCode()); // Výpis klávesy
         Runnable action = keyAction.get(keyEvent.getCode());
-        if(action != null){
+        if (action != null) {
             System.out.println("Action triggered for: " + keyEvent.getCode());
             action.run();
+        } else {
+            System.out.println("No action mapped for: " + keyEvent.getCode());
         }
-        else  System.out.println("No action mapped for: " + keyEvent.getCode());
-
     }
 
     @Override
@@ -61,15 +60,53 @@ public class GameController implements GameStateObserver {
     @Override
     public void onLivesUpdate(int remainingLives) {
         livesLabel.setText("Lives: " + remainingLives);
-
     }
 
     @Override
     public void onGameOver() {
         System.out.println("Game Over!");
-        //+ logika pro ukonceni hry
+        saveCurrentScore(); // Uloží skóre při ukončení hry
+    }
+
+    @FXML
+    private void displayHighScores() {
+        List<Integer> highScores = gameSession.getScoreManager().getHighScores();
+        if (highScores.isEmpty()) {
+            showAlert("No high scores available.");
+        } else {
+            StringBuilder sb = new StringBuilder("Top 5 High Scores:\n");
+            for (int i = 0; i < highScores.size(); i++) {
+                sb.append(i + 1).append(". ").append(highScores.get(i)).append("\n");
+            }
+            showAlert(sb.toString());
+        }
+    }
+
+    @FXML
+    public void handleHighScoresButton() {
+        displayHighScores();
+        System.out.println("High Scores button clicked");
+
+
+    }
+
+    @FXML
+    public void handleSaveScoreButton() {
+        saveCurrentScore();
+        System.out.println("Save Score button clicked");
     }
 
 
+    private void saveCurrentScore() {
+        gameSession.getScoreManager().saveCurrentScore();
+        showAlert("Score saved successfully!");
+    }
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("High Scores");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
