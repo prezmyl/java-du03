@@ -51,14 +51,20 @@ public class DrawingThread extends AnimationTimer {
 
 
 		// aktualiza a vykresleni hernich obj.
-		for (GameObject object : gameObject){
-			if (object instanceof DrawableSimulable simulable){
-				simulable.draw(gc);
-				simulable.simulate();
-			} else if (object instanceof DrawAble drawable) {
-				drawable.draw(gc);
-			}
-		}
+		gameObject.stream()
+				.filter(obj -> obj instanceof DrawableSimulable)
+				.map(obj -> (DrawableSimulable) obj)
+				.forEach(simulable -> {
+					simulable.simulate();
+					simulable.draw(gc);
+				});
+
+
+		gameObject.stream()
+				.filter(obj -> obj instanceof DrawAble && !(obj instanceof DrawableSimulable))
+				.map(obj -> (DrawAble) obj)
+				.forEach(drawable -> drawable.draw(gc));
+
 
 		//gameStateObserver.onScoreUpdate(scoreManager.getScore());
 		//gameStateObserver.onLivesUpdate(player.getHealth().getLives());

@@ -17,6 +17,13 @@ public class HealthDisplay implements DrawAble {
         gc.fillText("Lives: " + health.getLives(), 10, 20);
     }
 
+    public void render(GraphicsContext gc, int lives) {
+        // Custom logic to render health visually using GraphicsContext
+        gc.clearRect(0, 0, 100, 20); // Example: Clear a section for health
+        gc.fillText("Lives: " + lives, 10, 10); // Example: Draw text
+    }
+
+
     public void update() {
         if (gc != null) {
             draw(gc); // Aktualizuje zobrazení na aktuálním grafickém kontextu
