@@ -10,18 +10,18 @@ public class DrawingThread extends AnimationTimer {
 	private final GraphicsContext gc;
 	private final ArrayList<GameObject> gameObject = new ArrayList<>();
 	private final Player player;
-	//private final GameStateObserver gameStateObserver;
+	private final GameStateObserver gameStateObserver;
 	private final ScoreManager scoreManager;
 	private final HealthDisplay healthDisplay;
 	private long lastBulletTime = 0;
 	private static final long BULLET_INTERVAL = 1000000000;
 
 
-	public DrawingThread(Canvas canvas, GameSession gameSession ) {
+	public DrawingThread(Canvas canvas, GameSession gameSession, GameStateObserver gameStateObserver ) {
 		this.gc = canvas.getGraphicsContext2D();
 		this.player = gameSession.getPlayer();
 		this.scoreManager = gameSession.getScoreManager();
-		//this.gameStateObserver = gameSession.getGameStateObserver();
+		this.gameStateObserver = gameStateObserver;
 		this.healthDisplay = new HealthDisplay(player.new Health(3));
 
 
@@ -37,6 +37,10 @@ public class DrawingThread extends AnimationTimer {
 
 
 
+	}
+
+	private void onGameOver() {
+		gameStateObserver.onGameOver(); // Notifikace o Game Over
 	}
 
 	@Override
@@ -63,10 +67,9 @@ public class DrawingThread extends AnimationTimer {
 				.forEach(drawable -> drawable.draw(gc));
 
 
-		//gameStateObserver.onScoreUpdate(scoreManager.getScore());
-		//gameStateObserver.onLivesUpdate(player.getHealth().getLives());
-		healthDisplay.update(); // Aktualizuje zobrazení životů
-		scoreManager.update(); // Aktualizuje zobrazení skóre
+		gameStateObserver.onScoreUpdate(scoreManager.getScore());
+		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
+
 
 	/*	if (player.getHealth().getLives() <= 0) {
 			gameStateObserver.onGameOver();
@@ -90,11 +93,40 @@ public class DrawingThread extends AnimationTimer {
 				Collisionable col1 = (Collisionable) obj1;
 				Collisionable col2 = (Collisionable) obj2;
 
+				// Kontrola, zda jsou oba objekty aktivni
+				if (!col1.isActive() || !col2.isActive()) {
+					continue;
+				}
+
 				if (col1.intersect(col2.getBoundingBox())) {
 					col1.hitBy(col2);
 					col2.hitBy(col1);
+
+					// Zpracujeme kolizi pouze jednou
+					if (obj1 instanceof Enemy && obj2 instanceof Player) {
+						handlePlayerEnemyCollision((Player) obj2, (Enemy) obj1);
+						break;
+					} else if (obj2 instanceof Enemy && obj1 instanceof Player) {
+						handlePlayerEnemyCollision((Player) obj1, (Enemy) obj2);
+						break;
+					}
 				}
 			}
+		}
+	}
+
+
+	private void handlePlayerEnemyCollision(Player player, Enemy enemy) {
+		if (!enemy.isActive()) {
+			return; // Zabrání opakovanému zpracování stejné kolize
+		}
+
+		player.getHealth().decreaseLives();
+		System.out.println("Player lives decreased. Current lives: " + player.getHealth().getLives()); // Debug výpis
+		enemy.setActive(false);
+
+		if (player.getHealth().getLives() <= 0) {
+			onGameOver();
 		}
 	}
 

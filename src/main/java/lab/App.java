@@ -50,7 +50,7 @@ public class App extends Application {
 			gameRoot.getChildren().add(0, canvas);
 			canvas.setFocusTraversable(false);
 
-			drawingThread = new DrawingThread(canvas, gameSession);
+			drawingThread = new DrawingThread(canvas, gameSession, gameController);
 			gameController.setGameSession(gameSession, drawingThread);
 
 			Scene gameScene = new Scene(gameRoot, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);

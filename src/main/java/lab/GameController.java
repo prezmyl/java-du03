@@ -1,5 +1,6 @@
 package lab;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -65,7 +66,7 @@ public class GameController implements GameStateObserver {
     @Override
     public void onGameOver() {
         System.out.println("Game Over!");
-        saveCurrentScore(); // Uloží skóre při ukončení hry
+        saveCurrentScore(); // Ulozi skore pri ukončení hry
     }
 
     @FXML
@@ -86,6 +87,7 @@ public class GameController implements GameStateObserver {
     public void handleHighScoresButton() {
         displayHighScores();
         System.out.println("High Scores button clicked");
+        requestFocusToCanvas();
 
 
     }
@@ -94,8 +96,14 @@ public class GameController implements GameStateObserver {
     public void handleSaveScoreButton() {
         saveCurrentScore();
         System.out.println("Save Score button clicked");
+        requestFocusToCanvas();
     }
 
+    private void requestFocusToCanvas() {
+        if (scoreLabel.getScene() != null) {
+            scoreLabel.getScene().getRoot().requestFocus();
+        }
+    }
 
     private void saveCurrentScore() {
         gameSession.getScoreManager().saveCurrentScore();
@@ -103,10 +111,12 @@ public class GameController implements GameStateObserver {
     }
 
     private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("High Scores");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("High Scores");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }

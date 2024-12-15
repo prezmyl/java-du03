@@ -14,5 +14,7 @@
 
     <!-- Tlačítko pro uložení skóre -->
     <Button fx:id="saveScoreButton" layoutX="10" layoutY="100" text="Save Score" onAction="#handleSaveScoreButton" />
-</Pane>
 
+    <!-- Popis ovládání v pravém horním rohu -->
+    <Label layoutX="100" layoutY="10" text="Ovládání: &lt;- Pohyb vlevo, -&gt; Pohyb vpravo, SPACE střelba" />
+</Pane>

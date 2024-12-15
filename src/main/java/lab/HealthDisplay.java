@@ -26,7 +26,7 @@ public class HealthDisplay implements DrawAble {
 
     public void update() {
         if (gc != null) {
-            draw(gc); // Aktualizuje zobrazení na aktuálním grafickém kontextu
+            draw(gc);
         }
     }
 }
