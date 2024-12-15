@@ -19,30 +19,48 @@ public class App extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			// Nacteni menu jako vychozi obrazovka
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/lab/menuWindow.fxml"));
+			Pane menuRoot = loader.load();
+
+			// Nastaveni akce pro prepnuti na herni obrazovku
+			MenuController menuController = loader.getController();
+			menuController.setApp(this); // Propojeni s intanci App
+
+			Scene menuScene = new Scene(menuRoot);
+			primaryStage.setScene(menuScene);
+			primaryStage.setTitle("Space Invaders - Menu");
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Metoda pro prepnuti na obrazovku
+	public void startGame(Stage primaryStage) {
+		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/lab/gameWindow.fxml"));
-			Pane root = loader.load();
+			Pane gameRoot = loader.load();
 
 			gameSession = new GameSession();
 
 			GameController gameController = loader.getController();
 
 			Canvas canvas = new Canvas(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
-			root.getChildren().add(0,canvas);
+			gameRoot.getChildren().add(0, canvas);
 			canvas.setFocusTraversable(false);
 
 			drawingThread = new DrawingThread(canvas, gameSession);
 			gameController.setGameSession(gameSession, drawingThread);
 
-			Scene scene = new Scene(root, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
-			primaryStage.setScene(scene);
+			Scene gameScene = new Scene(gameRoot, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
+			primaryStage.setScene(gameScene);
 			primaryStage.setTitle("Space Invaders");
-			primaryStage.show();
 
-			scene.setOnKeyPressed(gameController::handleKeyPress);
+			gameScene.setOnKeyPressed(gameController::handleKeyPress);
 			canvas.requestFocus();
 
 			drawingThread.start();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

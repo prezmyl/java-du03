@@ -43,12 +43,6 @@ public class DrawingThread extends AnimationTimer {
 	public void handle(long now) {
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
-		// pridani strely
-	/*	if (now - lastBulletTime > BULLET_INTERVAL) {
-				addBullet(player.getPosition().getX() + player.getWidth() / 2 - Bullet.BULLET_WIDTH / 2, player.getPosition().getY() - Bullet.BULLET_HEIGHT);
-			lastBulletTime = now;
-		}*/
-
 
 		// aktualiza a vykresleni hernich obj.
 		gameObject.stream()
