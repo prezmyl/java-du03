@@ -36,20 +36,20 @@ public class DrawingThread extends AnimationTimer {
 			gameObject.add(new Barricade(200 + i * 100, 300));
 		}
 
-		if (player.getHealth().getLives() <= 0){
+		/*if (player.getHealth().getLives() <= 0){
 			onGameOver();
-		}
+		}*/
 
 
 
 	}
 
-	private void onGameOver() {
+	/*private void onGameOver() {
 		stop();
 		System.out.println("onGameOver, stopping simulation!");
 		Platform.runLater(() -> gameStateObserver.onGameOver());
 
-	}
+	}*/
 
 	@Override
 	public void handle(long now) {
@@ -80,6 +80,7 @@ public class DrawingThread extends AnimationTimer {
 
 
 		if (player.getHealth().getLives() <= 0) {
+			stop();
 			gameStateObserver.onGameOver();
 		}
 
@@ -137,9 +138,7 @@ public class DrawingThread extends AnimationTimer {
 		System.out.println("Player lives decreased. Current lives: " + player.getHealth().getLives()); // Debug výpis
 		enemy.setActive(false);
 
-		if (player.getHealth().getLives() <= 0) {
-			onGameOver();
-		}
+
 	}
 
 	private void handleBulletEnemyCollision(Bullet bullet, Enemy enemy) {
