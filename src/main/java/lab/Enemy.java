@@ -53,7 +53,8 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     @Override
     public void hitBy(Collisionable another) {
         if (another instanceof Bullet) {
-            setActive(false);
+            System.out.println("Enemy hit by bullet.");
+            //setActive(false);
         }
     }
 

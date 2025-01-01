@@ -65,8 +65,15 @@ public class GameController implements GameStateObserver {
 
     @Override
     public void onGameOver() {
-        System.out.println("Game Over!");
-        saveCurrentScore(); // Ulozi skore pri ukončení hry
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Over");
+            alert.setHeaderText("invasion succeed");
+            alert.setContentText("You lost all your lives and the planet Earth is lost");
+            alert.showAndWait();
+            saveCurrentScore();
+        });
+
     }
 
     @FXML

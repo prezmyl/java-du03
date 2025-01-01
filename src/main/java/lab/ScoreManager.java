@@ -21,6 +21,7 @@ public class ScoreManager {
 
     public void increaseScore(int points) {
         score += points;
+        System.out.println("Increasing Score");
     }
 
     public void resetScore() {

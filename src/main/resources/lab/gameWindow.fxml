@@ -6,7 +6,7 @@
 
 <Pane xmlns:fx="http://javafx.com/fxml" fx:controller="lab.GameController" prefWidth="800" prefHeight="400">
     <!-- Skóre a životy -->
-    <Label fx:id="scoreLabel" layoutX="10" layoutY="10" text="Score: 0" />
+    <Label fx:id="scoreLabel" layoutX="10" layoutY="10" />
     <Label fx:id="livesLabel" layoutX="10" layoutY="30" text="Lives: 3" />
 
     <!-- Tlačítko pro zobrazení skóre -->

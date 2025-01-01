@@ -1,6 +1,7 @@
 package lab;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
@@ -35,12 +36,19 @@ public class DrawingThread extends AnimationTimer {
 			gameObject.add(new Barricade(200 + i * 100, 300));
 		}
 
+		if (player.getHealth().getLives() <= 0){
+			onGameOver();
+		}
+
 
 
 	}
 
 	private void onGameOver() {
-		gameStateObserver.onGameOver(); // Notifikace o Game Over
+		stop();
+		System.out.println("onGameOver, stopping simulation!");
+		Platform.runLater(() -> gameStateObserver.onGameOver());
+
 	}
 
 	@Override
@@ -71,9 +79,9 @@ public class DrawingThread extends AnimationTimer {
 		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
 
 
-	/*	if (player.getHealth().getLives() <= 0) {
+		if (player.getHealth().getLives() <= 0) {
 			gameStateObserver.onGameOver();
-		}*/
+		}
 
 
 	}
@@ -105,10 +113,14 @@ public class DrawingThread extends AnimationTimer {
 					// Zpracujeme kolizi pouze jednou
 					if (obj1 instanceof Enemy && obj2 instanceof Player) {
 						handlePlayerEnemyCollision((Player) obj2, (Enemy) obj1);
-						break;
 					} else if (obj2 instanceof Enemy && obj1 instanceof Player) {
 						handlePlayerEnemyCollision((Player) obj1, (Enemy) obj2);
-						break;
+					}
+
+					if (obj1 instanceof Bullet && obj2 instanceof Enemy) {
+						handleBulletEnemyCollision((Bullet) obj1, (Enemy) obj2);
+					} else if (obj2 instanceof Bullet && obj1 instanceof Enemy) {
+						handleBulletEnemyCollision((Bullet) obj2, (Enemy) obj1);
 					}
 				}
 			}
@@ -127,6 +139,21 @@ public class DrawingThread extends AnimationTimer {
 
 		if (player.getHealth().getLives() <= 0) {
 			onGameOver();
+		}
+	}
+
+	private void handleBulletEnemyCollision(Bullet bullet, Enemy enemy) {
+		if (enemy.isActive()) {
+			System.out.println("Handling collision: Bullet -> Enemy");
+			enemy.setActive(false);
+			bullet.setActive(false);
+
+			if (scoreManager != null) {
+				scoreManager.increaseScore(100);
+				System.out.println("Score increased. Current score: " + scoreManager.getScore());
+			} else {
+				System.out.println("ScoreManager is null!");
+			}
 		}
 	}
 
