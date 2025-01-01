@@ -68,12 +68,16 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
 
     @Override
     public void hitBy(Collisionable another) {
-        if (another instanceof Enemy && this instanceof Player) {
-            Player player = (Player) this;
-            System.out.println("Collision detected between Player and Enemy. Processing..."); // Debug výpis
-            //player.getHealth().decreaseLives();
+        System.out.println("Player hit by: " + another.getClass().getSimpleName());
+        if (another instanceof Enemy || another instanceof Bullet) {
+            this.getHealth().decreaseLives();
+            if (this.getHealth().getLives() <= 0) {
+                setActive(false);
+                System.out.println("Player is no longer active.");
+            }
         }
     }
+
     @Override
     public boolean isActive() {
         return active;

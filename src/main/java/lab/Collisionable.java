@@ -12,4 +12,11 @@ public interface Collisionable {
     boolean isActive();
 
     void setActive(boolean active);
+
+    default void handleCollision(Collisionable another) {
+        if (this.intersect(another.getBoundingBox())){
+            another.hitBy(this);
+            this.hitBy(another);
+        }
+    }
 }

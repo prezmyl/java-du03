@@ -54,7 +54,11 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     public void hitBy(Collisionable another) {
         if (another instanceof Bullet) {
             System.out.println("Enemy hit by bullet.");
-            //setActive(false);
+            setActive(false);
+        }
+        if (another instanceof Player) {
+            System.out.println("Enemy hit by player.");
+            setActive(false);
         }
     }
 

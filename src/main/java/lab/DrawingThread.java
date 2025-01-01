@@ -4,7 +4,12 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.util.Pair;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class DrawingThread extends AnimationTimer {
@@ -75,6 +80,18 @@ public class DrawingThread extends AnimationTimer {
 				.forEach(drawable -> drawable.draw(gc));
 
 
+	/*	gameObject.stream()
+					.filter(obj -> obj instanceof Collisionable)
+					.map(obj -> (Collisionable) obj)
+					.forEach(col1 -> gameObject.stream()
+						.filter(obj -> obj instanceof Collisionable)
+						.map(obj -> (Collisionable) obj)
+						.filter(col2 -> col1 != col2)
+						.filter(col2 -> col1.isActive() && col2.isActive())
+						.filter(col2 -> col1.intersect(col2.getBoundingBox()))
+						.forEach(col2 -> col1.handleCollision(col2)));
+*/
+
 		gameStateObserver.onScoreUpdate(scoreManager.getScore());
 		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
 
@@ -87,6 +104,52 @@ public class DrawingThread extends AnimationTimer {
 
 	}
 
+/*
+private void checkCollisions() {
+    List<Collisionable> activeObjects = gameObject.stream()
+            .filter(obj -> obj instanceof Collisionable)
+            .map(obj -> (Collisionable) obj)
+            .filter(Collisionable::isActive)
+            .toList();
+
+    // Set pro sledování zpracovaných kolizí
+    Set<Pair<Collisionable, Collisionable>> processedCollisions = new HashSet<>();
+
+    for (int i = 0; i < activeObjects.size(); i++) {
+        for (int j = i + 1; j < activeObjects.size(); j++) {
+            Collisionable col1 = activeObjects.get(i);
+            Collisionable col2 = activeObjects.get(j);
+
+            Pair<Collisionable, Collisionable> collisionPair = new Pair<>(col1, col2);
+
+            // Pokud již byla tato kolize zpracována, přeskočíme
+            if (processedCollisions.contains(collisionPair)) {
+                continue;
+            }
+
+            col1.handleCollision(col2);
+            processedCollisions.add(collisionPair);
+        }
+    }
+}
+
+*/	private  void checkCollisions(){
+		List<Collisionable> activeObjects = gameObject.stream()
+				.filter(obj -> obj instanceof Collisionable)
+				.map(obj -> (Collisionable) obj)
+				.filter(Collisionable::isActive)
+				.toList();
+
+		for (int i = 0; i < activeObjects.size(); i++) {
+			for (int j = i + 1; j < activeObjects.size(); j++) {
+				Collisionable col1 = activeObjects.get(i);
+				Collisionable col2 = activeObjects.get(j);
+
+				col1.handleCollision(col2);
+			}
+		}
+	}
+/*
 	private void checkCollisions() {
 		for (int i = 0; i < gameObject.size(); i++) {
 			GameObject obj1 = gameObject.get(i);
@@ -126,7 +189,7 @@ public class DrawingThread extends AnimationTimer {
 				}
 			}
 		}
-	}
+	}*/
 
 
 	private void handlePlayerEnemyCollision(Player player, Enemy enemy) {
