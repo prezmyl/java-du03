@@ -59,6 +59,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         if (another instanceof Player) {
             System.out.println("Enemy hit by player.");
             setActive(false);
+
         }
     }
 
