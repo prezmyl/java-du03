@@ -6,18 +6,26 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Bullet extends GameObject implements DrawableSimulable, Collisionable {
+    public enum Type {PLAYER, ENEMY}
     protected static final double BULLET_WIDTH = 5;
     protected static final double BULLET_HEIGHT = 10;
     private boolean active = true;
 
-    public Bullet(double x, double y) {
+    private final Type type;
+
+    public Bullet(double x, double y, Type type) {
         super(x, y);
-        this.speedY = 3;
+        this.speedY = type == Type.PLAYER ? -3 : 3;
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     @Override
     public void simulate() {
-        position = new Point2D(position.getX(), position.getY() - speedY);
+        position = new Point2D(position.getX(), position.getY() + speedY);
     }
 
     @Override

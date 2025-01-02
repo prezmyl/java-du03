@@ -21,7 +21,7 @@ public class DrawingThread extends AnimationTimer {
 	private final HealthDisplay healthDisplay;
 	private long lastBulletTime = 0;
 	private static final long BULLET_INTERVAL = 1000000000;
-
+	private final GameSession gameSession;
 
 	public DrawingThread(Canvas canvas, GameSession gameSession, GameStateObserver gameStateObserver ) {
 		this.gc = canvas.getGraphicsContext2D();
@@ -29,18 +29,7 @@ public class DrawingThread extends AnimationTimer {
 		this.scoreManager = gameSession.getScoreManager();
 		this.gameStateObserver = gameStateObserver;
 		this.healthDisplay = new HealthDisplay(player.new Health(3));
-
-
-		gameObject.add(player);
-
-		for (int i = 0; i < 11; i++) {
-			gameObject.add(new Enemy(100 + i * 60, 50));
-		}
-
-		for (int i = 0; i < 5; i++) {
-			gameObject.add(new Barricade(200 + i * 100, 300));
-		}
-
+		this.gameSession = gameSession;
 	}
 
 
@@ -49,9 +38,27 @@ public class DrawingThread extends AnimationTimer {
 	public void handle(long now) {
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
+		gameSession.removeInactiveObjects();
 		checkCollisions();
 
-		// aktualiza a vykresleni hernich obj.
+		// Vykreslení a simulace DrawableSimulable
+		gameSession.getDrawableSimulables().forEach(obj -> {
+			obj.simulate();
+			obj.draw(gc);
+		});
+
+		// Vykreslení DrawAble
+		gameSession.getDrawables().forEach(obj -> obj.draw(gc));
+
+		gameStateObserver.onScoreUpdate(scoreManager.getScore());
+		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
+
+		if (player.getHealth().getLives() <= 0) {
+			stop();
+			gameStateObserver.onGameOver();
+		}
+
+		/* aktualiza a vykresleni hernich obj.
 		gameObject.removeIf(obj -> obj instanceof Collisionable && !((Collisionable) obj).isActive());
 
 		gameObject.stream()
@@ -76,10 +83,28 @@ public class DrawingThread extends AnimationTimer {
 			stop();
 			gameStateObserver.onGameOver();
 		}
-
+*/
 
 	}
 
+	private void checkCollisions() {
+		List<Collisionable> activeObjects = new ArrayList<>();
+		activeObjects.addAll(gameSession.getBullets());
+		activeObjects.addAll(gameSession.getEnemies());
+		activeObjects.add(player);
+		activeObjects.addAll(gameSession.getBarricades());
+
+		for (int i = 0; i < activeObjects.size(); i++) {
+			for (int j = i + 1; j < activeObjects.size(); j++) {
+				Collisionable col1 = activeObjects.get(i);
+				Collisionable col2 = activeObjects.get(j);
+
+				col1.handleCollision(col2);
+			}
+		}
+	}
+
+/*
 	private  void checkCollisions(){
 			List<Collisionable> activeObjects = gameObject.stream()
 					.filter(obj -> obj instanceof Collisionable)
@@ -95,7 +120,7 @@ public class DrawingThread extends AnimationTimer {
 					col1.handleCollision(col2);
 				}
 			}
-	}
+	}*/
 
 
 	public void addBullet(Bullet bullet) {

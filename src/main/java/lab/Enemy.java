@@ -10,14 +10,16 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     private static final double ENEMY_HEIGHT = 20;
     private final double initialX;
     private final double initialY;
+    private final GameSession gameSession;
 
     private boolean active = true;
 
-    public Enemy(double x, double y) {
+    public Enemy(double x, double y, GameSession gameSession) {
         super(x, y);
         this.initialX = x;
         this.initialY = y;
         this.speedY = 0.3;
+        this.gameSession = gameSession;
     }
 
     @Override
@@ -40,6 +42,11 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         gc.fillRect(position.getX(), position.getY(), ENEMY_WIDTH, ENEMY_HEIGHT);
     }
 
+    private void shoot() {
+        Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() + getHeight(), Bullet.Type.ENEMY);
+        gameSession.addBullet(bullet);
+    }
+
     @Override
     public Rectangle2D getBoundingBox() {
         return new Rectangle2D(position.getX(), position.getY(), ENEMY_WIDTH, ENEMY_HEIGHT);
@@ -52,12 +59,18 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
 
     @Override
     public void hitBy(Collisionable another) {
-        if (another instanceof Bullet) {
-            System.out.println("Enemy hit by bullet.");
-            setActive(false);
+        if (another instanceof Bullet bullet) {
+
+
+            if (bullet.getType() == Bullet.Type.PLAYER){
+                System.out.println("Enemy hit by player bullet.");
+                gameSession.getScoreManager().increaseScore(100);
+                setActive(false);
+            }
         }
         if (another instanceof Player) {
-            System.out.println("Enemy hit by player.");
+            System.out.println("Enemy hit by player ship.");
+            gameSession.getScoreManager().increaseScore(50);
             setActive(false);
 
         }

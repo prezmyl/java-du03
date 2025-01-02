@@ -32,7 +32,7 @@ public class GameController implements GameStateObserver {
         Player player = gameSession.getPlayer();
         keyAction.put(KeyCode.LEFT, () -> player.moveLeft());
         keyAction.put(KeyCode.RIGHT, () -> player.moveRight());
-        keyAction.put(KeyCode.SPACE, () -> player.shoot(drawingThread));
+        keyAction.put(KeyCode.SPACE, () -> player.shoot(gameSession));
         keyAction.put(KeyCode.H, this::displayHighScores);
         keyAction.put(KeyCode.J, this::saveCurrentScore);
     }

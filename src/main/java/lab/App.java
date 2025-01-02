@@ -47,7 +47,7 @@ public class App extends Application {
 			GameController gameController = loader.getController();
 
 			Canvas canvas = new Canvas(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
-			gameRoot.getChildren().add(0, canvas);
+			gameRoot.getChildren().addFirst(canvas);
 			canvas.setFocusTraversable(false);
 
 			drawingThread = new DrawingThread(canvas, gameSession, gameController);

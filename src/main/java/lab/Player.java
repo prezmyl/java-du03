@@ -48,13 +48,16 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
     /*public void shoot(){
         Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() - Bullet.BULLET_HEIGHT);
     }*/
-    public void shoot(DrawingThread drawingThread) {
+    public void shoot(GameSession gameSession) {
         Bullet bullet = new Bullet(
                 position.getX() + getWidth() / 2 - Bullet.BULLET_WIDTH / 2,
-                position.getY() - Bullet.BULLET_HEIGHT
+                position.getY() - Bullet.BULLET_HEIGHT,
+                Bullet.Type.PLAYER
         );
-        drawingThread.addBullet(bullet); // Předání střely do DrawingThread
+        gameSession.addBullet(bullet); // Přidání střely do GameSession
+        System.out.println("Player shooting at: " + position);
     }
+
     @Override
     public Rectangle2D getBoundingBox() {
         return new Rectangle2D(position.getX(), position.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
