@@ -20,8 +20,13 @@ public class DrawingThread extends AnimationTimer {
 	private final ScoreManager scoreManager;
 	private final HealthDisplay healthDisplay;
 	private long lastBulletTime = 0;
-	private static final long BULLET_INTERVAL = 1000000000;
+	private long lastTime;
 	private final GameSession gameSession;
+	private double deltaT = 0.016;
+	private long currentNow;
+
+	private long lastSecond = 0;
+	private int frameCount = 0;
 
 	public DrawingThread(Canvas canvas, GameSession gameSession, GameStateObserver gameStateObserver ) {
 		this.gc = canvas.getGraphicsContext2D();
@@ -32,10 +37,28 @@ public class DrawingThread extends AnimationTimer {
 		this.gameSession = gameSession;
 	}
 
-
+	@Override
+	public void start() {
+		lastTime = System.nanoTime(); // Inicializace času při startu
+		super.start(); // Spuštění herní smyčky AnimationTimer
+	}
 
 	@Override
 	public void handle(long now) {
+		currentNow = now;
+		deltaT = (now - lastTime) / 1e9;
+		lastTime = now;
+
+		// Počet snímků za sekundu
+		long currentSecond = now / 1_000_000_000;
+		if (lastSecond == currentSecond) {
+			frameCount++;
+		} else {
+			System.out.println("FPS: " + frameCount);
+			frameCount = 0;
+			lastSecond = currentSecond;
+		}
+
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
 		gameSession.removeInactiveObjects();
@@ -43,7 +66,7 @@ public class DrawingThread extends AnimationTimer {
 
 		// Vykreslení a simulace DrawableSimulable
 		gameSession.getDrawableSimulables().forEach(obj -> {
-			obj.simulate();
+			obj.simulate(deltaT);
 			obj.draw(gc);
 		});
 
@@ -127,4 +150,11 @@ public class DrawingThread extends AnimationTimer {
 		gameObject.add(bullet);
 	}
 
+	public double getDeltaT(){
+		return deltaT;
+	}
+
+	public long getCurrentNow() {
+		return currentNow;
+	}
 }

@@ -18,21 +18,18 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         super(x, y);
         this.initialX = x;
         this.initialY = y;
-        this.speedY = 0.3;
+        this.speedY = 100;
         this.gameSession = gameSession;
     }
 
     @Override
-    public void simulate() {
-        if (position.getY() + speedY + ENEMY_HEIGHT < Constant.GAME_HEIGHT) {
-            position = new Point2D(position.getX(), position.getY() + speedY);
-        }
-        else {
-            this.speedY = 0;
-        }
+    public void simulate(double deltaT) {
+        System.out.println("Simulating enemy at Y: " + position.getY());
+        position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
 
         if (position.getY() >= Constant.GAME_HEIGHT - 50) {
-            position = new Point2D(initialX, initialY);
+            System.out.println("Reset enemy to top");
+            position = new Point2D(initialX, 0); // Reset Y nahoru
         }
     }
 

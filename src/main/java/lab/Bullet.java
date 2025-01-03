@@ -15,7 +15,7 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
 
     public Bullet(double x, double y, Type type) {
         super(x, y);
-        this.speedY = type == Type.PLAYER ? -3 : 3;
+        this.speedY = type == Type.PLAYER ? -300 : 300;
         this.type = type;
     }
 
@@ -24,8 +24,8 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
     }
 
     @Override
-    public void simulate() {
-        position = new Point2D(position.getX(), position.getY() + speedY);
+    public void simulate(double deltaT) {
+        position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
     }
 
     @Override

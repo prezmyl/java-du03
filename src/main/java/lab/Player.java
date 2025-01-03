@@ -9,17 +9,18 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
 
     private static final double PLAYER_WIDTH = 40;
     private static final double PLAYER_HEIGHT = 20;
+    private long lastBulletTime = 0;
     private Health health;
     private boolean active = true;
 
     public Player(double x, double y) {
         super(x, y);
-        this.speedX = 5;
+        this.speedX = 5000;
         this.health = new Health(Constant.MAX_HEALTH);
     }
 
     @Override
-    public void simulate(){
+    public void simulate(double deltaT){
        /* if (position.getX() + speedX < Constant.GAME_WIDTH - PLAYER_WIDTH && position.getX() + speedX > 0) {
             position = new Point2D(position.getX() + speedX, position.getY());
         }
@@ -36,26 +37,29 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
 
     }
 
-    public void moveLeft(){
-        position = new Point2D(position.getX() - speedX, position.getY());
+    public void moveLeft(double deltaT){
+        position = new Point2D(position.getX() - speedX * deltaT, position.getY());
     }
 
 
-    public void moveRight(){
-        position = new Point2D(position.getX() + speedX, position.getY());
+    public void moveRight(double deltaT){
+        position = new Point2D(position.getX() + speedX * deltaT, position.getY());
     }
 
     /*public void shoot(){
         Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() - Bullet.BULLET_HEIGHT);
     }*/
-    public void shoot(GameSession gameSession) {
-        Bullet bullet = new Bullet(
-                position.getX() + getWidth() / 2 - Bullet.BULLET_WIDTH / 2,
-                position.getY() - Bullet.BULLET_HEIGHT,
-                Bullet.Type.PLAYER
-        );
-        gameSession.addBullet(bullet); // Přidání střely do GameSession
-        System.out.println("Player shooting at: " + position);
+    public void shoot(GameSession gameSession, long now) {
+        if (now - lastBulletTime > Constant.BULLET_INTERVAL) {
+            Bullet bullet = new Bullet(
+                    position.getX() + getWidth() / 2 - Bullet.BULLET_WIDTH / 2,
+                    position.getY() - Bullet.BULLET_HEIGHT,
+                    Bullet.Type.PLAYER
+            );
+            gameSession.addBullet(bullet); // Přidání střely do GameSession
+            lastBulletTime = now;
+            System.out.println("Player shooting at: " + position);
+        }
     }
 
     @Override

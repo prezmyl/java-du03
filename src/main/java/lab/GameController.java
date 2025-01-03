@@ -30,9 +30,9 @@ public class GameController implements GameStateObserver {
 
         //init valid input mapping using lambda
         Player player = gameSession.getPlayer();
-        keyAction.put(KeyCode.LEFT, () -> player.moveLeft());
-        keyAction.put(KeyCode.RIGHT, () -> player.moveRight());
-        keyAction.put(KeyCode.SPACE, () -> player.shoot(gameSession));
+        keyAction.put(KeyCode.LEFT, () -> player.moveLeft(drawingThread.getDeltaT()));
+        keyAction.put(KeyCode.RIGHT, () -> player.moveRight(drawingThread.getDeltaT()));
+        keyAction.put(KeyCode.SPACE, () -> player.shoot(gameSession, drawingThread.getCurrentNow()));
         keyAction.put(KeyCode.H, this::displayHighScores);
         keyAction.put(KeyCode.J, this::saveCurrentScore);
     }

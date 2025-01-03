@@ -61,6 +61,7 @@ public class App extends Application {
 			canvas.requestFocus();
 
 			drawingThread.start();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
