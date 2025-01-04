@@ -1,5 +1,6 @@
 package lab;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 
 import java.util.ArrayList;
@@ -26,11 +27,59 @@ public class GameSession {
         initializeEnemies();
         initializeBarricades();
     }
+    public void moveEnemiesDown() {
+        for (Enemy enemy : enemies) {
+            enemy.setPosition(new Point2D(enemy.getPosition().getX(), enemy.getPosition().getY() + enemy.getMOVE_STEP()));
+        }
+    }
+
+    private Direction enemyDirection = Direction.RIGHT;
+
+    public Direction getEnemyDirection() {
+        return enemyDirection;
+    }
+
+    public void updateEnemyDirection() {
+        boolean atEdge = enemies.stream().anyMatch(enemy ->
+                enemy.getPosition().getX() <= 0 ||
+                        enemy.getPosition().getX() + enemy.getWidth() >= Constant.GAME_WIDTH
+        );
+
+        if (atEdge && shouldMoveEnemiesDown()) { // ❗ Nová podmínka pro posun dolů
+            enemyDirection = (enemyDirection == Direction.RIGHT) ? Direction.LEFT : Direction.RIGHT;
+            moveEnemiesDown();
+            updateLastMoveDownTime(); // ❗ Aktualizace posledního posunu dolů
+            System.out.println("Enemies moved down after reaching edge.");
+        }
+    }
+
+
+    private double gameTime = 0; // Celkový herní čas
+    private double lastMoveDownTime = 0; // Čas posledního posunu dolů
+    private final double MOVE_DOWN_INTERVAL = 0.5; // Interval mezi posuny dolů (v sekundách)
+
+    public double getGameTime() {
+        return gameTime;
+    }
+
+    public void updateGameTime(double deltaT) {
+        gameTime += deltaT;
+    }
+
+    public boolean shouldMoveEnemiesDown() {
+        return gameTime - lastMoveDownTime >= MOVE_DOWN_INTERVAL;
+    }
+
+    public void updateLastMoveDownTime() {
+        lastMoveDownTime = gameTime;
+    }
+
 
     public void removeInactiveObjects() {
         bullets.removeIf(bullet -> !bullet.isActive());
         enemies.removeIf(enemy -> !enemy.isActive());
-       //  barricades.removeIf(barricade -> barricade instanceof Collisionable && !((Collisionable) barricade).isActive());
+        barricades.removeIf(barricade -> !barricade.isActive());
+
     }
 
 

@@ -9,15 +9,28 @@ public class Barricade extends GameObject implements DrawAble, Collisionable{
 
     private static final double BARRICADE_WIDTH = 50;
     private static final double BARRICADE_HEIGHT = 15;
+    private static final int MAX_HEALTH = 3;
+
+    private int health;
     private boolean active = true;
+
 
     public Barricade(double x, double y) {
         super(x, y);
+        this.health = MAX_HEALTH;
     }
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.GRAY);
+        //gc.setFill(Color.GRAY);
+        switch (health) {
+            case 3 -> gc.setFill(Color.GRAY); // Plně nepoškozená
+            case 2 -> gc.setFill(Color.DARKGRAY); // Poškozená
+            case 1 -> gc.setFill(Color.LIGHTGRAY); // Téměř zničená
+            default -> {
+                return; // Nevykresluj, pokud je barikáda zničená
+            }
+        }
         gc.fillRect(position.getX(), position.getY(), BARRICADE_WIDTH, BARRICADE_HEIGHT);
     }
 
@@ -43,7 +56,11 @@ public class Barricade extends GameObject implements DrawAble, Collisionable{
     public void hitBy(Collisionable another) {
         if (another instanceof Bullet) {
             System.out.println("Barricade hit by bullet.");
-            setActive(false); // Deaktivace bariéry při zásahu střelou
+            health--;
+            if (health <= 0) {
+                setActive(false); // Deaktivace bariéry při zásahu střelou
+                System.out.println("Barricade destroyed!");
+            }
         }
     }
 
@@ -57,5 +74,8 @@ public class Barricade extends GameObject implements DrawAble, Collisionable{
         this.active = active;
     }
 
+    public int getHealth() {
+        return health;
+    }
 
 }

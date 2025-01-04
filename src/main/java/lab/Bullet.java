@@ -26,6 +26,10 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
     @Override
     public void simulate(double deltaT) {
         position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
+        if (position.getY() < 0 || position.getY() > Constant.GAME_HEIGHT) {
+            setActive(false);
+            System.out.println("Bullet removed: " + position);
+        }
     }
 
     @Override

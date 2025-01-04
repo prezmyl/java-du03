@@ -77,11 +77,11 @@ public class GameController implements GameStateObserver {
     }
 
     private void handleContinuousInput() {
-        System.out.println("Running handleContinuousInput | Active keys: " + activeKeys);
+      //  System.out.println("Running handleContinuousInput | Active keys: " + activeKeys);
         for (KeyCode key : activeKeys) {
             Runnable action = keyAction.get(key);
             if (action != null) {
-                System.out.println("Executing action for: " + key);
+              //  System.out.println("Executing action for: " + key);
                 action.run();
             }
         }

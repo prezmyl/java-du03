@@ -48,6 +48,8 @@ public class DrawingThread extends AnimationTimer {
 		currentNow = now;
 		deltaT = (now - lastTime) / 1e9;
 		lastTime = now;
+		gameSession.updateGameTime(deltaT);
+		System.out.println("deltaT: " + deltaT);
 
 		// Počet snímků za sekundu
 		long currentSecond = now / 1_000_000_000;
