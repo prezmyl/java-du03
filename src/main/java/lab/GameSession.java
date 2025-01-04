@@ -5,6 +5,8 @@ import javafx.scene.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameSession {
@@ -45,6 +47,26 @@ public class GameSession {
     public boolean checkEnemyReachedGround() {
         return enemies.stream().anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
     }
+
+    private long lastEnemyShotTime = 0;
+    private final double SHOOT_PROBABILITY = 0.3; // 30% šance na střelbu
+
+    public void enemyShoot(long now) {
+        if (now - lastEnemyShotTime < Constant.BULLET_INTERVAL) {
+            return; // Zabráníme příliš časté střelbě
+        }
+
+        List<Enemy> shootingCandidates = enemies.stream()
+                .filter(enemy -> Math.random() < SHOOT_PROBABILITY)
+                .toList();
+
+        if (!shootingCandidates.isEmpty()) {
+            Enemy shooter = shootingCandidates.get(new Random().nextInt(shootingCandidates.size()));
+            shooter.shoot(now);
+            lastEnemyShotTime = now;
+        }
+    }
+
 
 
 

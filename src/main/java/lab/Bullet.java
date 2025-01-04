@@ -15,7 +15,7 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
 
     public Bullet(double x, double y, Type type) {
         super(x, y);
-        this.speedY = type == Type.PLAYER ? -300 : 300;
+        this.speedY = type == Type.PLAYER ? -300 : 200;
         this.type = type;
     }
 
@@ -34,8 +34,14 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(position.getX(), position.getY(), BULLET_WIDTH, BULLET_HEIGHT);
+        if (this.type == Type.PLAYER) {
+            gc.setFill(Color.BLACK);
+            gc.fillRect(position.getX(), position.getY(), BULLET_WIDTH, BULLET_HEIGHT);
+        }
+        if (this.type == Type.ENEMY) {
+            gc.setFill(Color.DARKORANGE);
+            gc.fillRect(position.getX(), position.getY(), BULLET_WIDTH, BULLET_HEIGHT);
+        }
     }
 
     @Override

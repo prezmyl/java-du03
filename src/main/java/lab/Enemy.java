@@ -6,9 +6,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Enemy extends GameObject implements DrawableSimulable, Collisionable{
-    private final double ENEMY_WIDTH = 30;
-    private final double ENEMY_HEIGHT = 20;
-    private final double MOVE_STEP = 10;
+    private static final double ENEMY_WIDTH = 30;
+    private static final double ENEMY_HEIGHT = 20;
+    private static final double MOVE_STEP = 10;
+
+    private long lastBulletTime = 0;
     private final double initialX;
     private final double initialY;
     private final GameSession gameSession;
@@ -52,13 +54,13 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
             }
         }
 
+
+
        // System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
 
     }
 
-    private void setDirection(Direction direction) {
-        this.direction = direction;
-    }
+
 
 
 
@@ -68,9 +70,22 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         gc.fillRect(position.getX(), position.getY(), ENEMY_WIDTH, ENEMY_HEIGHT);
     }
 
-    private void shoot() {
-        Bullet bullet = new Bullet(position.getX() + getWidth() / 2, position.getY() + getHeight(), Bullet.Type.ENEMY);
-        gameSession.addBullet(bullet);
+    public void shoot(long now) {
+        if (now - lastBulletTime > getShootInterval()) { // Střelba v určitém intervalu
+            Bullet bullet = new Bullet(
+                    position.getX() + getWidth() / 2 - Bullet.BULLET_WIDTH / 2,
+                    position.getY() + getHeight(),
+                    Bullet.Type.ENEMY
+            );
+            gameSession.addBullet(bullet);
+            lastBulletTime = now;
+            System.out.println("Enemy shooting at: " + position);
+        }
+    }
+
+    private long getShootInterval() {
+        double distanceToPlayer = gameSession.getPlayer().getPosition().getY() - position.getY();
+        return (long) (Constant.BULLET_INTERVAL * (distanceToPlayer / Constant.GAME_HEIGHT));
     }
 
     @Override
@@ -110,6 +125,10 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     @Override
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    private void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public double getWidth() {

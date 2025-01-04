@@ -61,6 +61,13 @@ public class DrawingThread extends AnimationTimer {
 			lastSecond = currentSecond;
 		}
 
+		if (gameSession.getPlayer().getHealth().getLives() <= 0 || gameSession.checkEnemyReachedGround()) {
+			stop();
+			gameStateObserver.onGameOver();
+		}
+
+		gameSession.enemyShoot(now);
+
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
 
@@ -79,10 +86,7 @@ public class DrawingThread extends AnimationTimer {
 		gameStateObserver.onScoreUpdate(scoreManager.getScore());
 		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
 
-		if (gameSession.getPlayer().getHealth().getLives() <= 0 || gameSession.checkEnemyReachedGround()) {
-			stop();
-			gameStateObserver.onGameOver();
-		}
+
 
 
 
