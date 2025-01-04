@@ -49,7 +49,7 @@ public class GameController implements GameStateObserver {
             activeKeys.remove(event.getCode());  // Odebereme klávesu při uvolnění
         });
 
-        //pressed continues action
+        //pressed continues action - anonymous Class
         inputHandler = new AnimationTimer() {
           @Override
           public void handle(long now) {
