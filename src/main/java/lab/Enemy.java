@@ -12,9 +12,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     private final double initialX;
     private final double initialY;
     private final GameSession gameSession;
-    private static boolean movingRigth = true;
     private Direction direction ;
-
 
     private boolean active = true;
 
@@ -30,8 +28,9 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
 
     @Override
     public void simulate(double deltaT) {
-       System.out.println("Simulating enemy at Y: " + position.getY());
-        if (direction == Direction.RIGHT) {
+      // System.out.println("Simulating enemy at Y: " + position.getY());
+
+       if (direction == Direction.RIGHT) {
             position = position.add(speedX * deltaT, 0);
         } else {
             position = position.subtract(speedX * deltaT, 0);
@@ -52,65 +51,16 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
                 enemy.setPosition(enemy.getPosition().add(0, 10));
             }
         }
-       /* position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
 
-        if (position.getY() >= Constant.GAME_HEIGHT - 50) {
-            System.out.println("Reset enemy to top");
-            position = new Point2D(initialX, initialY); // Reset Y nahoru
-        }
+       // System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
 
-        if (movingRigth) {
-            position = new Point2D(position.getX() + speedX * deltaT, position.getY());
-        } else {
-            position = new Point2D(position.getX() - speedX * deltaT, position.getY());
-        }
-
-        if ((position.getX() <= 0 || position.getX() + ENEMY_WIDTH >= Constant.GAME_WIDTH)) {
-            System.out.println("Enemy reached edge! Changing direction.");
-            invertDirectionAndMoveDown(deltaT);
-        }*/
-
-        System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
-
-       /* Direction direction = gameSession.getEnemyDirection();
-
-        if (direction == Direction.RIGHT) {
-            position = position.add(speedX * deltaT, 0);
-        } else {
-            position = position.subtract(speedX * deltaT, 0);
-        }
-
-        // Pokud je čas na posun dolů, posuneme všechny nepřátele
-        if (gameSession.shouldMoveEnemiesDown()) {
-            gameSession.moveEnemiesDown();
-            gameSession.updateLastMoveDownTime();
-        }*/
-        /*Direction direction = gameSession.getEnemyDirection();
-
-        if (direction == Direction.RIGHT) {
-            position = position.add(speedX * deltaT, 0);
-        } else {
-            position = position.subtract(speedX * deltaT, 0);
-        }
-
-        gameSession.updateEnemyDirection();*/
     }
 
     private void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    private void invertDirectionAndMoveDown(double deltaT) {
-        movingRigth = !movingRigth; // Otočení směru
 
-        System.out.println("Moving all enemies down!");
-
-        // Posune všechny nepřátele dolů jednotně
-        gameSession.getEnemies().forEach(enemy -> {
-            enemy.position = new Point2D(enemy.position.getX(), enemy.position.getY() + speedY * deltaT);
-            System.out.println("New enemy position after move down: X=" + enemy.position.getX() + ", Y=" + enemy.position.getY());
-        });
-    }
 
     @Override
     public void draw(GraphicsContext gc) {

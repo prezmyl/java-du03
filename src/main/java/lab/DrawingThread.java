@@ -63,6 +63,7 @@ public class DrawingThread extends AnimationTimer {
 
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 
+
 		gameSession.removeInactiveObjects();
 		checkCollisions();
 
@@ -78,37 +79,12 @@ public class DrawingThread extends AnimationTimer {
 		gameStateObserver.onScoreUpdate(scoreManager.getScore());
 		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
 
-		if (player.getHealth().getLives() <= 0) {
+		if (gameSession.getPlayer().getHealth().getLives() <= 0 || gameSession.checkEnemyReachedGround()) {
 			stop();
 			gameStateObserver.onGameOver();
 		}
 
-		/* aktualiza a vykresleni hernich obj.
-		gameObject.removeIf(obj -> obj instanceof Collisionable && !((Collisionable) obj).isActive());
 
-		gameObject.stream()
-				.filter(obj -> obj instanceof DrawableSimulable)
-				.map(obj -> (DrawableSimulable) obj)
-				.forEach(simulable -> {
-					simulable.simulate();
-					simulable.draw(gc);
-				});
-
-
-		gameObject.stream()
-				.filter(obj -> obj instanceof DrawAble && !(obj instanceof DrawableSimulable))
-				.map(obj -> (DrawAble) obj)
-				.forEach(drawable -> drawable.draw(gc));
-
-		gameStateObserver.onScoreUpdate(scoreManager.getScore());
-		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
-
-
-		if (player.getHealth().getLives() <= 0) {
-			stop();
-			gameStateObserver.onGameOver();
-		}
-*/
 
 	}
 
@@ -129,23 +105,7 @@ public class DrawingThread extends AnimationTimer {
 		}
 	}
 
-/*
-	private  void checkCollisions(){
-			List<Collisionable> activeObjects = gameObject.stream()
-					.filter(obj -> obj instanceof Collisionable)
-					.map(obj -> (Collisionable) obj)
-					.filter(Collisionable::isActive)
-					.toList();
 
-			for (int i = 0; i < activeObjects.size(); i++) {
-				for (int j = i + 1; j < activeObjects.size(); j++) {
-					Collisionable col1 = activeObjects.get(i);
-					Collisionable col2 = activeObjects.get(j);
-
-					col1.handleCollision(col2);
-				}
-			}
-	}*/
 
 
 	public void addBullet(Bullet bullet) {

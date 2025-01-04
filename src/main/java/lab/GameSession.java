@@ -14,6 +14,9 @@ public class GameSession {
     private final List<Barricade> barricades;
     private final List<Bullet> bullets;
     private final Scene scene;
+    private final Ground ground;
+
+    private double gameTime = 0; // Celkový herní čas, nevyuzito
 
 
     public GameSession(Scene scene) {
@@ -23,56 +26,12 @@ public class GameSession {
         this.barricades = new ArrayList<>();
         this.bullets = new ArrayList<>();
         this.scoreManager = new ScoreManager();
+        this.ground = new Ground();
 
         initializeEnemies();
         initializeBarricades();
     }
-    public void moveEnemiesDown() {
-        for (Enemy enemy : enemies) {
-            enemy.setPosition(new Point2D(enemy.getPosition().getX(), enemy.getPosition().getY() + enemy.getMOVE_STEP()));
-        }
-    }
 
-    private Direction enemyDirection = Direction.RIGHT;
-
-    public Direction getEnemyDirection() {
-        return enemyDirection;
-    }
-
-    public void updateEnemyDirection() {
-        boolean atEdge = enemies.stream().anyMatch(enemy ->
-                enemy.getPosition().getX() <= 0 ||
-                        enemy.getPosition().getX() + enemy.getWidth() >= Constant.GAME_WIDTH
-        );
-
-        if (atEdge && shouldMoveEnemiesDown()) { // ❗ Nová podmínka pro posun dolů
-            enemyDirection = (enemyDirection == Direction.RIGHT) ? Direction.LEFT : Direction.RIGHT;
-            moveEnemiesDown();
-            updateLastMoveDownTime(); // ❗ Aktualizace posledního posunu dolů
-            System.out.println("Enemies moved down after reaching edge.");
-        }
-    }
-
-
-    private double gameTime = 0; // Celkový herní čas
-    private double lastMoveDownTime = 0; // Čas posledního posunu dolů
-    private final double MOVE_DOWN_INTERVAL = 0.5; // Interval mezi posuny dolů (v sekundách)
-
-    public double getGameTime() {
-        return gameTime;
-    }
-
-    public void updateGameTime(double deltaT) {
-        gameTime += deltaT;
-    }
-
-    public boolean shouldMoveEnemiesDown() {
-        return gameTime - lastMoveDownTime >= MOVE_DOWN_INTERVAL;
-    }
-
-    public void updateLastMoveDownTime() {
-        lastMoveDownTime = gameTime;
-    }
 
 
     public void removeInactiveObjects() {
@@ -81,6 +40,12 @@ public class GameSession {
         barricades.removeIf(barricade -> !barricade.isActive());
 
     }
+
+    //endGame condition check
+    public boolean checkEnemyReachedGround() {
+        return enemies.stream().anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
+    }
+
 
 
     public Player getPlayer() {
@@ -93,6 +58,10 @@ public class GameSession {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public Ground getGround() {
+        return ground;
     }
 
     private void initializeEnemies() {
@@ -137,8 +106,11 @@ public class GameSession {
 
     public Stream<DrawAble> getDrawables() {
         return Stream.concat(
-                barricades.stream(),
-                Stream.of(player)
+                Stream.concat(
+                        barricades.stream(),
+                        Stream.of(player)
+                ),
+                Stream.of(ground)
         );
     }
 
@@ -151,5 +123,12 @@ public class GameSession {
         return barricades.stream();
     }
 
+    public double getGameTime() {
+        return gameTime;
+    }
+
+    public void updateGameTime(double deltaT) {
+        gameTime += deltaT;
+    }
 
 }
