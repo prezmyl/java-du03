@@ -1,15 +1,15 @@
 package lab;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameController implements GameStateObserver {
 
@@ -19,7 +19,9 @@ public class GameController implements GameStateObserver {
     private Label livesLabel;
 
     private GameSession gameSession;
+    private AnimationTimer inputHandler;
     private final Map<KeyCode, Runnable> keyAction = new HashMap<>();
+    private final Set<KeyCode> activeKeys = new HashSet<>();
 
     public GameController() {
         // Bezparametrický konstruktor pro FXML
@@ -35,6 +37,27 @@ public class GameController implements GameStateObserver {
         keyAction.put(KeyCode.SPACE, () -> player.shoot(gameSession, drawingThread.getCurrentNow()));
         keyAction.put(KeyCode.H, this::displayHighScores);
         keyAction.put(KeyCode.J, this::saveCurrentScore);
+
+        // continuous input handling
+        Scene gameScene = gameSession.getScene();
+
+        gameScene.setOnKeyPressed(event -> {
+            activeKeys.add(event.getCode());  // Přidáme stisknutou klávesu do aktivních
+        });
+
+        gameScene.setOnKeyReleased(event -> {
+            activeKeys.remove(event.getCode());  // Odebereme klávesu při uvolnění
+        });
+
+        //pressed continues action
+        inputHandler = new AnimationTimer() {
+          @Override
+          public void handle(long now) {
+              handleContinuousInput();
+          }
+        };
+        inputHandler.start();
+
     }
 
     public void initialize() {
@@ -53,6 +76,18 @@ public class GameController implements GameStateObserver {
         }
     }
 
+    private void handleContinuousInput() {
+        System.out.println("Running handleContinuousInput | Active keys: " + activeKeys);
+        for (KeyCode key : activeKeys) {
+            Runnable action = keyAction.get(key);
+            if (action != null) {
+                System.out.println("Executing action for: " + key);
+                action.run();
+            }
+        }
+    }
+
+
     @Override
     public void onScoreUpdate(int newScore) {
         scoreLabel.setText("Score: " + newScore);
@@ -65,6 +100,7 @@ public class GameController implements GameStateObserver {
 
     @Override
     public void onGameOver() {
+        inputHandler.stop();
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game Over");

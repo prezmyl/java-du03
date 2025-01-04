@@ -24,7 +24,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
 
     @Override
     public void simulate(double deltaT) {
-        System.out.println("Simulating enemy at Y: " + position.getY());
+       // System.out.println("Simulating enemy at Y: " + position.getY());
         position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
 
         if (position.getY() >= Constant.GAME_HEIGHT - 50) {

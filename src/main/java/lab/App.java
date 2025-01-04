@@ -42,7 +42,8 @@ public class App extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/lab/gameWindow.fxml"));
 			Pane gameRoot = loader.load();
 
-			gameSession = new GameSession();
+			Scene gameScene = new Scene(gameRoot, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
+			gameSession = new GameSession(gameScene);
 
 			GameController gameController = loader.getController();
 
@@ -53,11 +54,11 @@ public class App extends Application {
 			drawingThread = new DrawingThread(canvas, gameSession, gameController);
 			gameController.setGameSession(gameSession, drawingThread);
 
-			Scene gameScene = new Scene(gameRoot, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
+
 			primaryStage.setScene(gameScene);
 			primaryStage.setTitle("Space Invaders");
 
-			gameScene.setOnKeyPressed(gameController::handleKeyPress);
+			//gameScene.setOnKeyPressed(gameController::handleKeyPress);
 			canvas.requestFocus();
 
 			drawingThread.start();

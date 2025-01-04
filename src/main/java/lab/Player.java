@@ -15,7 +15,7 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
 
     public Player(double x, double y) {
         super(x, y);
-        this.speedX = 5000;
+        this.speedX = 100;
         this.health = new Health(Constant.MAX_HEALTH);
     }
 
@@ -38,12 +38,16 @@ public class Player extends GameObject implements DrawableSimulable, Collisionab
     }
 
     public void moveLeft(double deltaT){
-        position = new Point2D(position.getX() - speedX * deltaT, position.getY());
+        if (position.getX() > 0) {
+            position = new Point2D(position.getX() - speedX * deltaT, position.getY());
+        }
     }
 
 
     public void moveRight(double deltaT){
-        position = new Point2D(position.getX() + speedX * deltaT, position.getY());
+        if (position.getX() + PLAYER_WIDTH < Constant.GAME_WIDTH) {
+            position = new Point2D(position.getX() + speedX * deltaT, position.getY());
+        }
     }
 
     /*public void shoot(){

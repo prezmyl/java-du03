@@ -1,5 +1,7 @@
 package lab;
 
+import javafx.scene.Scene;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -10,9 +12,11 @@ public class GameSession {
     private final List<Enemy> enemies;
     private final List<Barricade> barricades;
     private final List<Bullet> bullets;
+    private final Scene scene;
 
 
-    public GameSession() {
+    public GameSession(Scene scene) {
+        this.scene = scene;
         this.player = new Player(Constant.PLAYER_START.getX(), Constant.PLAYER_START.getY());
         this.enemies = new ArrayList<>();
         this.barricades = new ArrayList<>();
@@ -36,6 +40,10 @@ public class GameSession {
 
     public ScoreManager getScoreManager() {
         return scoreManager;
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
     private void initializeEnemies() {
