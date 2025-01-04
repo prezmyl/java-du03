@@ -13,6 +13,8 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     private final double initialY;
     private final GameSession gameSession;
     private static boolean movingRigth = true;
+    private Direction direction ;
+
 
     private boolean active = true;
 
@@ -22,13 +24,35 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         this.initialY = y;
         this.speedY = 0;
         this.speedX = 100;
+        this.direction = Direction.RIGHT;
         this.gameSession = gameSession;
     }
 
     @Override
     public void simulate(double deltaT) {
-       /* System.out.println("Simulating enemy at Y: " + position.getY());
-        position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
+       System.out.println("Simulating enemy at Y: " + position.getY());
+        if (direction == Direction.RIGHT) {
+            position = position.add(speedX * deltaT, 0);
+        } else {
+            position = position.subtract(speedX * deltaT, 0);
+        }
+
+        if (position.getX() < 0) {
+            position = new Point2D(0, position.getY());
+
+            for (Enemy enemy : gameSession.getEnemies()) {
+                enemy.setDirection(Direction.RIGHT);
+                enemy.setPosition(enemy.getPosition().add(0, 10));
+            }
+        } else if (position.getX() + getWidth() > Constant.GAME_WIDTH) {
+            position = new Point2D(Constant.GAME_WIDTH - getWidth(), position.getY());
+
+            for (Enemy enemy : gameSession.getEnemies()) {
+                enemy.setDirection(Direction.LEFT);
+                enemy.setPosition(enemy.getPosition().add(0, 10));
+            }
+        }
+       /* position = new Point2D(position.getX(), position.getY() + speedY * deltaT);
 
         if (position.getY() >= Constant.GAME_HEIGHT - 50) {
             System.out.println("Reset enemy to top");
@@ -44,11 +68,11 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         if ((position.getX() <= 0 || position.getX() + ENEMY_WIDTH >= Constant.GAME_WIDTH)) {
             System.out.println("Enemy reached edge! Changing direction.");
             invertDirectionAndMoveDown(deltaT);
-        }
+        }*/
 
         System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
 
-        Direction direction = gameSession.getEnemyDirection();
+       /* Direction direction = gameSession.getEnemyDirection();
 
         if (direction == Direction.RIGHT) {
             position = position.add(speedX * deltaT, 0);
@@ -61,7 +85,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
             gameSession.moveEnemiesDown();
             gameSession.updateLastMoveDownTime();
         }*/
-        Direction direction = gameSession.getEnemyDirection();
+        /*Direction direction = gameSession.getEnemyDirection();
 
         if (direction == Direction.RIGHT) {
             position = position.add(speedX * deltaT, 0);
@@ -69,7 +93,11 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
             position = position.subtract(speedX * deltaT, 0);
         }
 
-        gameSession.updateEnemyDirection();
+        gameSession.updateEnemyDirection();*/
+    }
+
+    private void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     private void invertDirectionAndMoveDown(double deltaT) {
