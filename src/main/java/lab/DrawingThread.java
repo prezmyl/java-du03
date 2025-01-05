@@ -66,6 +66,11 @@ public class DrawingThread extends AnimationTimer {
 			gameStateObserver.onGameOver();
 		}
 
+		if (gameSession.checkNoEnemyDefeated()){
+			stop();
+			gameStateObserver.onGameWin();
+		}
+
 		gameSession.enemyShoot(now);
 
 		gc.clearRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);

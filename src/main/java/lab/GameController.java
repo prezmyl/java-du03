@@ -112,6 +112,19 @@ public class GameController implements GameStateObserver {
 
     }
 
+    @Override
+    public void onGameWin() {
+        inputHandler.stop();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Victory");
+            alert.setHeaderText("The invasion has been stopped ");
+            alert.setContentText("All enemies have been destroyed and the planet Earth is saved");
+            alert.showAndWait();
+            saveCurrentScore();
+        });
+    }
+
     @FXML
     private void displayHighScores() {
         List<Integer> highScores = gameSession.getScoreManager().getHighScores();

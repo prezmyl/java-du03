@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 public class Enemy extends GameObject implements DrawableSimulable, Collisionable{
     private static final double ENEMY_WIDTH = 30;
     private static final double ENEMY_HEIGHT = 20;
-    private static final double MOVE_STEP = 10;
+
     
     private long lastBulletTime = 0;
     private final double initialX;
@@ -45,17 +45,14 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         if (position.getX() < 0) {
             position = new Point2D(0, position.getY());
 
-            for (Enemy enemy : gameSession.getEnemies()) {
-                enemy.setDirection(Direction.RIGHT);
-                enemy.setPosition(enemy.getPosition().add(0, 10));
-            }
+            gameSession.updateAllEnemiesDirection(this.direction);
+            gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
+
         } else if (position.getX() + getWidth() > Constant.GAME_WIDTH) {
             position = new Point2D(Constant.GAME_WIDTH - getWidth(), position.getY());
 
-            for (Enemy enemy : gameSession.getEnemies()) {
-                enemy.setDirection(Direction.LEFT);
-                enemy.setPosition(enemy.getPosition().add(0, 10));
-            }
+            gameSession.updateAllEnemiesDirection(this.direction);
+            gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
         }
 
 
@@ -131,8 +128,12 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         this.active = active;
     }
 
-    private void setDirection(Direction direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public Direction getDirection(){
+        return direction;
     }
 
     public double getWidth() {
@@ -143,7 +144,5 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         return ENEMY_HEIGHT;
     }
 
-    public double getMOVE_STEP() {
-        return MOVE_STEP;
-    }
+
 }

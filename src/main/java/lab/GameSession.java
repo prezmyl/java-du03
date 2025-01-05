@@ -48,6 +48,33 @@ public class GameSession {
         return enemies.stream().anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
     }
 
+    public boolean checkNoEnemyDefeated() {
+        return enemies.isEmpty();
+    }
+
+    public void updateAllEnemiesDirection(Direction direction) {
+        Direction newDirection;
+        if(direction == Direction.RIGHT) {
+            newDirection = Direction.LEFT;
+        }
+        else {
+            newDirection = Direction.RIGHT;
+        }
+
+
+        for (Enemy enemy : enemies) {
+            enemy.setDirection(newDirection);
+        }
+
+    }
+
+    public void moveAllEnemiesDown(double distance) {
+        for (Enemy enemy : enemies) {
+            enemy.setPosition(enemy.getPosition().add(0, distance)); // Posun dolů
+        }
+    }
+
+
     public double getSpeedMultiplier() {
         double timeFactor = 1.0 + (gameTime / 60.0); // Každou minutu o 10 % rychlejší
         double enemyFactor = 1.0 + ((double) (Constant.INITIAL_ENEMY_COUNT - enemies.size()) / Constant.INITIAL_ENEMY_COUNT); // Čím méně nepřátel, tím rychlejší
