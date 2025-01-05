@@ -12,6 +12,7 @@ public class Ufo extends Enemy {
     private static final double UFO_SPEED = 100;
     private static final double UFO_CURVE_INTENSITY = 50;
     private static final long MIN_SHOT_INTERVAL = 1000; // 1 sekunda
+    private static final double SHOOT_TOLERANCE_FACTOR = 10;
     private boolean movingRight;
     private double angle = 0;
     private final Random random;
@@ -53,14 +54,13 @@ public class Ufo extends Enemy {
         double middleLine = playerX + playerWidth / 2;
         double rightLine = playerX + 2 * playerWidth;
 
-        if (now - lastShotTime > MIN_SHOT_INTERVAL) {
-            if (Math.abs(position.getX() - leftLine) < UFO_SPEED / 10 ||
-                    Math.abs(position.getX() - middleLine) < UFO_SPEED / 10 ||
-                    Math.abs(position.getX() - rightLine) < UFO_SPEED / 10) {
+        if (now - lastShotTime > MIN_SHOT_INTERVAL && (Math.abs(position.getX() - leftLine) < UFO_SPEED / SHOOT_TOLERANCE_FACTOR ||
+                    Math.abs(position.getX() - middleLine) < UFO_SPEED / SHOOT_TOLERANCE_FACTOR ||
+                    Math.abs(position.getX() - rightLine) < UFO_SPEED / SHOOT_TOLERANCE_FACTOR)) {
                 shoot(now);
                 lastShotTime = now;
             }
-        }
+
     }
 
 
