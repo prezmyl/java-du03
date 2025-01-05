@@ -39,25 +39,25 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
             position = position.subtract(speedX * speedMultiplier * deltaT, 0);
         }
 
-        System.out.printf("Enemy Speed: %.2f | Adjusted Speed: %.2f | DeltaT: %.5f%n",
-                speedX, adjustedSpeed, deltaT);
+       // System.out.printf("Enemy Speed: %.2f | Adjusted Speed: %.2f | DeltaT: %.5f%n", speedX, adjustedSpeed, deltaT);
 
-        if (position.getX() < 0) {
-            position = new Point2D(0, position.getY());
+        if (!(this instanceof Ufo)) {
+            if (position.getX() < 0) {
+                position = new Point2D(0, position.getY());
 
-            gameSession.updateAllEnemiesDirection(this.direction);
-            gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
+                gameSession.updateAllEnemiesDirection(this.direction);
+                gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
 
-        } else if (position.getX() + getWidth() > Constant.GAME_WIDTH) {
-            position = new Point2D(Constant.GAME_WIDTH - getWidth(), position.getY());
+            } else if (position.getX() + getWidth() > Constant.GAME_WIDTH) {
+                position = new Point2D(Constant.GAME_WIDTH - getWidth(), position.getY());
 
-            gameSession.updateAllEnemiesDirection(this.direction);
-            gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
+                gameSession.updateAllEnemiesDirection(this.direction);
+                gameSession.moveAllEnemiesDown(Constant.MOVE_STEP);
+            }
         }
 
 
-
-       // System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
+        // System.out.println("Enemy position after move: X=" + position.getX() + ", Y=" + position.getY());
 
     }
 
@@ -80,7 +80,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
             );
             gameSession.addBullet(bullet);
             lastBulletTime = now;
-            System.out.println("Enemy shooting at: " + position);
+           // System.out.println("Enemy shooting at: " + position);
         }
     }
 
@@ -144,5 +144,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
         return ENEMY_HEIGHT;
     }
 
-
+    public GameSession getGameSession(){
+        return gameSession;
+    }
 }

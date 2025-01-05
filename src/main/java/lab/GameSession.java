@@ -1,12 +1,10 @@
 package lab;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameSession {
@@ -17,6 +15,8 @@ public class GameSession {
     private final List<Bullet> bullets;
     private final Scene scene;
     private final Ground ground;
+    private long lastEnemyShotTime = 0;
+    private final double SHOOT_PROBABILITY = 0.3; // 30% probabilty for shooting
 
     private double gameTime = 0; // Celkový herní čas, nevyuzito
 
@@ -37,7 +37,12 @@ public class GameSession {
 
 
     public void removeInactiveObjects() {
+        int before = bullets.size();
         bullets.removeIf(bullet -> !bullet.isActive());
+        int after = bullets.size();
+        if (before != after) {
+            System.out.println("Odstraněno " + (before - after) + " střel.");
+        }
         enemies.removeIf(enemy -> !enemy.isActive());
         barricades.removeIf(barricade -> !barricade.isActive());
 
@@ -45,10 +50,12 @@ public class GameSession {
 
     //endGame condition check
     public boolean checkEnemyReachedGround() {
-        return enemies.stream().anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
+        return enemies.stream()
+                .filter(enemy -> !(enemy instanceof Ufo))
+                .anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
     }
 
-    public boolean checkNoEnemyDefeated() {
+    public boolean checkIsEnemyDefeated() {
         return enemies.isEmpty();
     }
 
@@ -63,14 +70,18 @@ public class GameSession {
 
 
         for (Enemy enemy : enemies) {
-            enemy.setDirection(newDirection);
+            if (!(enemy instanceof Ufo)) {
+                enemy.setDirection(newDirection);
+            }
         }
 
     }
 
     public void moveAllEnemiesDown(double distance) {
         for (Enemy enemy : enemies) {
-            enemy.setPosition(enemy.getPosition().add(0, distance)); // Posun dolů
+            if (!(enemy instanceof Ufo)) {
+                enemy.setPosition(enemy.getPosition().add(0, distance)); // Posun dolů
+            }
         }
     }
 
@@ -81,8 +92,8 @@ public class GameSession {
         double distanceFactor = 1.0 + (1.0 - (getAverageEnemyDistanceToPlayer() / Constant.GAME_HEIGHT)); // Čím blíže jsou hráči, tím rychlejší
         double multiplier = timeFactor * enemyFactor * distanceFactor;
 
-        System.out.printf("Speed Multiplier: %.2f | Time Factor: %.2f | Enemy Factor: %.2f | Distance Factor: %.2f%n",
-                multiplier, timeFactor, enemyFactor, distanceFactor);
+        //System.out.printf("Speed Multiplier: %.2f | Time Factor: %.2f | Enemy Factor: %.2f | Distance Factor: %.2f%n",
+          //      multiplier, timeFactor, enemyFactor, distanceFactor);
 
         return multiplier;// Kombinace všech faktorů
     }
@@ -98,8 +109,7 @@ public class GameSession {
                 .orElse(1.0);
     }
 
-    private long lastEnemyShotTime = 0;
-    private final double SHOOT_PROBABILITY = 0.3; // 30% probabilty for shooting
+
 
     public void enemyShoot(long now) {
         //limits the amount of the shooting
@@ -120,23 +130,6 @@ public class GameSession {
 
 
 
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public ScoreManager getScoreManager() {
-        return scoreManager;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public Ground getGround() {
-        return ground;
-    }
-
     private void initializeEnemies() {
         for (int i = 0; i < 11; i++) {
             enemies.add(new Enemy(100 + i * 60, 50, this)); // Předání GameSession
@@ -151,6 +144,34 @@ public class GameSession {
 
     public void addBullet(Bullet bullet) {
         bullets.add(bullet);
+    }
+
+    public void updateGameTime(double deltaT) {
+        gameTime += deltaT;
+    }
+
+    public void attemptSpawn() {
+        if (hasActiveUfo()) {
+
+         //   System.out.println("Attempting to spawn UFO, UFO exists already...");
+            return;
+        }
+
+        System.out.println("Attempting to spawn UFO...");
+        Random random = new Random();
+        if (random.nextDouble() < 0.05) {
+            boolean movingRight = random.nextBoolean();
+            double startX = movingRight ? 0 : (Constant.GAME_WIDTH - Constant.UFO_WIDTH);
+            addEnemy(new Ufo(startX, 50, this, movingRight));
+        }
+    }
+
+    public void addEnemy(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public boolean hasActiveUfo() {
+        return enemies.stream().anyMatch(enemy -> enemy instanceof Ufo);
     }
 
 
@@ -187,6 +208,22 @@ public class GameSession {
         );
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ScoreManager getScoreManager() {
+        return scoreManager;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public Ground getGround() {
+        return ground;
+    }
+
     public Stream<Enemy> streamEnemies() {
         return enemies.stream();
     }
@@ -200,8 +237,5 @@ public class GameSession {
         return gameTime;
     }
 
-    public void updateGameTime(double deltaT) {
-        gameTime += deltaT;
-    }
 
 }

@@ -56,7 +56,10 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
 
     @Override
     public void hitBy(Collisionable another) {
-            this.setActive(false);
+        if (this.type == Type.ENEMY && (another instanceof Enemy)) {
+            return;
+        }
+        this.setActive(false);
     }
 
     @Override

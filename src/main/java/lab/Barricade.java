@@ -54,7 +54,7 @@ public class Barricade extends GameObject implements DrawAble, Collisionable{
 
     @Override
     public void hitBy(Collisionable another) {
-        if (another instanceof Bullet) {
+        if (another instanceof Bullet bullet && bullet.getType() == Bullet.Type.PLAYER) {
             System.out.println("Barricade hit by bullet.");
             health--;
             if (health <= 0) {

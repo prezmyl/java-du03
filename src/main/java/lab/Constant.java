@@ -15,6 +15,9 @@ public class Constant {
     public static final int INITIAL_ENEMY_COUNT = 10;
     public static final double MOVE_STEP = 10;
 
+    public static final double UFO_WIDTH = 50;
+    public static final double UFO_HEIGHT = 20;
+
 
 
 

@@ -105,7 +105,7 @@ public class GameController implements GameStateObserver {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game Over");
             alert.setHeaderText("invasion succeed");
-            alert.setContentText("You lost all your lives and the planet Earth is lost");
+            alert.setContentText("You lost and the planet Earth is lost too");
             alert.showAndWait();
             saveCurrentScore();
         });

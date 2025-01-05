@@ -58,7 +58,6 @@ public class App extends Application {
 			primaryStage.setScene(gameScene);
 			primaryStage.setTitle("Space Invaders");
 
-			//gameScene.setOnKeyPressed(gameController::handleKeyPress);
 			canvas.requestFocus();
 
 			drawingThread.start();

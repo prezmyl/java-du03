@@ -1,15 +1,11 @@
 package lab;
 
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class DrawingThread extends AnimationTimer {
@@ -66,7 +62,7 @@ public class DrawingThread extends AnimationTimer {
 			gameStateObserver.onGameOver();
 		}
 
-		if (gameSession.checkNoEnemyDefeated()){
+		if (gameSession.checkIsEnemyDefeated()){
 			stop();
 			gameStateObserver.onGameWin();
 		}
@@ -77,7 +73,11 @@ public class DrawingThread extends AnimationTimer {
 
 
 		gameSession.removeInactiveObjects();
+
+
 		checkCollisions();
+
+
 
 		// Vykreslení a simulace DrawableSimulable
 		gameSession.getDrawableSimulables().forEach(obj -> {
@@ -91,7 +91,7 @@ public class DrawingThread extends AnimationTimer {
 		gameStateObserver.onScoreUpdate(scoreManager.getScore());
 		gameStateObserver.onLivesUpdate(player.getHealth().getLives());
 
-
+		gameSession.attemptSpawn();
 
 
 
