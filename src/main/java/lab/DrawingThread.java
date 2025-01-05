@@ -49,7 +49,7 @@ public class DrawingThread extends AnimationTimer {
 		deltaT = (now - lastTime) / 1e9;
 		lastTime = now;
 		gameSession.updateGameTime(deltaT);
-		System.out.println("deltaT: " + deltaT);
+	/*	System.out.println("deltaT: " + deltaT);
 
 		// Počet snímků za sekundu
 		long currentSecond = now / 1_000_000_000;
@@ -59,7 +59,7 @@ public class DrawingThread extends AnimationTimer {
 			System.out.println("FPS: " + frameCount);
 			frameCount = 0;
 			lastSecond = currentSecond;
-		}
+		}*/
 
 		if (gameSession.getPlayer().getHealth().getLives() <= 0 || gameSession.checkEnemyReachedGround()) {
 			stop();

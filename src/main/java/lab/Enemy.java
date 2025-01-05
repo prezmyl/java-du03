@@ -9,7 +9,7 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     private static final double ENEMY_WIDTH = 30;
     private static final double ENEMY_HEIGHT = 20;
     private static final double MOVE_STEP = 10;
-
+    
     private long lastBulletTime = 0;
     private final double initialX;
     private final double initialY;
@@ -31,12 +31,16 @@ public class Enemy extends GameObject implements DrawableSimulable, Collisionabl
     @Override
     public void simulate(double deltaT) {
       // System.out.println("Simulating enemy at Y: " + position.getY());
-
+       double speedMultiplier = gameSession.getSpeedMultiplier();
+        double adjustedSpeed = speedX * deltaT * speedMultiplier;
        if (direction == Direction.RIGHT) {
-            position = position.add(speedX * deltaT, 0);
+            position = position.add(speedX * speedMultiplier  * deltaT, 0);
         } else {
-            position = position.subtract(speedX * deltaT, 0);
+            position = position.subtract(speedX * speedMultiplier * deltaT, 0);
         }
+
+        System.out.printf("Enemy Speed: %.2f | Adjusted Speed: %.2f | DeltaT: %.5f%n",
+                speedX, adjustedSpeed, deltaT);
 
         if (position.getX() < 0) {
             position = new Point2D(0, position.getY());

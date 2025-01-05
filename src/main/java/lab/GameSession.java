@@ -48,12 +48,36 @@ public class GameSession {
         return enemies.stream().anyMatch(enemy -> enemy.getBoundingBox().intersects(ground.getBoundingBox()));
     }
 
+    public double getSpeedMultiplier() {
+        double timeFactor = 1.0 + (gameTime / 60.0); // Každou minutu o 10 % rychlejší
+        double enemyFactor = 1.0 + ((double) (Constant.INITIAL_ENEMY_COUNT - enemies.size()) / Constant.INITIAL_ENEMY_COUNT); // Čím méně nepřátel, tím rychlejší
+        double distanceFactor = 1.0 + (1.0 - (getAverageEnemyDistanceToPlayer() / Constant.GAME_HEIGHT)); // Čím blíže jsou hráči, tím rychlejší
+        double multiplier = timeFactor * enemyFactor * distanceFactor;
+
+        System.out.printf("Speed Multiplier: %.2f | Time Factor: %.2f | Enemy Factor: %.2f | Distance Factor: %.2f%n",
+                multiplier, timeFactor, enemyFactor, distanceFactor);
+
+        return multiplier;// Kombinace všech faktorů
+    }
+
+
+    private double getAverageEnemyDistanceToPlayer() {
+        if (enemies.isEmpty()) return 1.0; // Pokud nejsou nepřátelé, vrátíme základní hodnotu
+
+        double playerY = player.getPosition().getY();
+        return enemies.stream()
+                .mapToDouble(enemy -> Math.abs(playerY - enemy.getPosition().getY()))
+                .average()
+                .orElse(1.0);
+    }
+
     private long lastEnemyShotTime = 0;
-    private final double SHOOT_PROBABILITY = 0.3; // 30% šance na střelbu
+    private final double SHOOT_PROBABILITY = 0.3; // 30% probabilty for shooting
 
     public void enemyShoot(long now) {
+        //limits the amount of the shooting
         if (now - lastEnemyShotTime < Constant.BULLET_INTERVAL) {
-            return; // Zabráníme příliš časté střelbě
+            return;
         }
 
         List<Enemy> shootingCandidates = enemies.stream()

@@ -15,7 +15,7 @@ public class Bullet extends GameObject implements DrawableSimulable, Collisionab
 
     public Bullet(double x, double y, Type type) {
         super(x, y);
-        this.speedY = type == Type.PLAYER ? -300 : 200;
+        this.speedY = type == Type.PLAYER ? - Constant.PLAYER_BULLET_SPEED : Constant.ENEMY_BULLET_SPEED;
         this.type = type;
     }
 
